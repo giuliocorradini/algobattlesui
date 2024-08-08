@@ -4,7 +4,20 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import hljs from "highlight.js/lib/core"
+import c from "highlight.js/lib/languages/c"
+import cpp from "highlight.js/lib/languages/cpp"
+import java from "highlight.js/lib/languages/java"
+
+const highlightCssSelector = "editor-code";
+
+hljs.configure({
+  cssSelector: highlightCssSelector
+})
+hljs.registerLanguage("c", c)
+hljs.registerLanguage("cpp", cpp)
+hljs.registerLanguage("java", java)
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -83,6 +96,10 @@ function AttemptsDrawer({attempts}) {
 export default function EditorPage() {
   const [language, setLanguage] = useState("C")
 
+  useEffect(() => {
+    hljs.highlightAll();
+  }, [])
+
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-background border-b flex items-center justify-between px-4 py-2 shadow-sm">
@@ -106,7 +123,7 @@ export default function EditorPage() {
         <div className="bg-background p-6 overflow-auto">
           <Textarea
             placeholder="Write your code here..."
-            className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none"
+            className={"w-full h-full resize-none border-none focus:ring-0 focus:outline-none " + highlightCssSelector}
           />
         </div>
       </div>
