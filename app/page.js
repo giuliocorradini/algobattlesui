@@ -54,6 +54,12 @@ function CategoryElement({ name, link }) {
   </>
 }
 
+function HighlightedCategories({categories}) {
+  return categories.map((cat, i) => {
+    return <CategoryElement {...cat} key={i}></CategoryElement>
+  })
+}
+
 function PuzzleCollectionCard({ title, difficulty, categories, pk }) {
   return <Card className="w-[200px] shrink-0">
     <CardContent className="flex aspect-[3/4] items-center justify-center rounded-md bg-background p-4">
@@ -124,6 +130,8 @@ export default function Home() {
     { name: "Computational geometry", link: "geom" }
   ]
 
+  const isLogged = true
+
   return (
     <div className="flex min-h-screen w-full">
       <aside className="hidden w-64 shrink-0 border-r bg-background md:flex flex-col">
@@ -136,17 +144,37 @@ export default function Home() {
         <nav className="flex flex-1 flex-col space-y-1 overflow-auto p-4">
           <div className="px-2 text-xs font-medium text-muted-foreground">Categories</div>
 
-          {highlight_categories.map((cat, i) => {
-            return <CategoryElement {...cat} key={i}></CategoryElement>
-          })}
+          <HighlightedCategories categories={highlight_categories}></HighlightedCategories>
 
           <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>
-          <Actions isLogged={false}></Actions>
+          <Actions isLogged={isLogged}></Actions>
         </nav>
       </aside>
 
+      
+
       <div className="flex-1 bg-muted/40">
         <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
+
+          <div className="flex items-center gap-4">
+          <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="md:hidden">
+                  <MenuIcon className="h-6 w-6" />
+                  <span className="sr-only">Toggle navigation</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="md:hidden">
+                <nav className="grid gap-1 px-2 py-4">
+                <HighlightedCategories categories={highlight_categories}></HighlightedCategories>
+
+                  <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>
+                  
+                  <Actions isLogged={isLogged}></Actions>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
 
           <div className="relative flex items-center">
             <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -156,6 +184,8 @@ export default function Home() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
+          <AccountButton username="dummy" email="dummy@algobattles.com"></AccountButton>
+
          
         </header>
 
