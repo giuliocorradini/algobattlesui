@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPuzzle, getPuzzlePublicTests } from "@/lib/api/puzzle"
+import { getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "@/lib/api/puzzle"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -100,6 +100,7 @@ export default function EditorPage({ params }) {
   const [errorMessage, setErrorMessage] = useState("")
   const [problemDescription, setProblemDescription] = useState({})
   const [publicTests, setPublicTests] = useState([])
+  const [editorContent, setEditorContent] = useState("")
   const pk = params.id
 
   const exampleTest = publicTests.at(0)
@@ -118,6 +119,18 @@ export default function EditorPage({ params }) {
     .catch(err => setErrorMessage(err))
   }, [])
 
+  function sendAttempt() {
+    puzzleAttemptRequest(pk, language, editorContent)
+    .then(response => {
+      //TODO: update DOM to display a new attempt
+      console.log("Sent!")
+    })
+    .catch(err => {
+      //TODO: may show a popup error message
+      setErrorMessage(err)
+    })
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-background border-b flex items-center justify-between px-4 py-2 shadow-sm">
@@ -125,7 +138,7 @@ export default function EditorPage({ params }) {
           <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
         </div>
         <div className="flex items-center gap-4">
-          <Button>Build</Button>
+          <Button onClick={sendAttempt}>Build</Button>
           <AttemptsDrawer attempts={[
             {isPassed: false, total: 5, passedTests: 3},
             {isPassed: true, total: 5, passedTests: 5}
@@ -138,6 +151,8 @@ export default function EditorPage({ params }) {
 
         <div className="bg-background p-6 overflow-auto">
           <Textarea
+            value={editorContent}
+            onChange={e => setEditorContent(e.target.value)}
             placeholder="Write your code here..."
             className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none"
           />
