@@ -72,6 +72,7 @@ function PuzzleCollectionCard({ title, difficulty, categories, pk }) {
       <div className="text-sm font-medium">{title}</div>
       <div className="text-xs text-muted-foreground">{difficulty}</div>
     </CardFooter>
+    <Link href={`/editor/${pk}`} >Open</Link>
   </Card>
 }
 
@@ -197,6 +198,13 @@ export default function Home() {
           <PuzzleCollection collectionName="Interview for FAANG" content={[
             { title: "Infinite stairs", difficulty: "Easy", pk: 20, categories: ["Tree", "Recursive"] }
           ]}></PuzzleCollection>
+
+          <PuzzleCollection
+          collectionName="Testing"
+          content={[
+            {title: "Puzzle 2", difficulty: "Medium", pk: 2, categories: ["greedy"]}
+          ]}
+          ></PuzzleCollection>
 
         </main>
       </div>

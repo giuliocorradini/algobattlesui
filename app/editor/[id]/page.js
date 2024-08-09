@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { getPuzzle } from "@/lib/api/puzzle"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -25,7 +26,7 @@ function LanguageSelector({ supportedLanguages, language, setLanguage }) {
 
 function PuzzleText({ title, description, example: { givenInput, expectedOutput }, constr: { mem, cpu } }) {
   return <div className="bg-muted p-6 overflow-auto">
-    <h2 className="text-2xl font-bold mb-4">Coding Problem</h2>
+    <h2 className="text-2xl font-bold mb-4">{title}</h2>
     <div className="prose text-muted-foreground">
       <p>
         {description}
@@ -80,8 +81,20 @@ function AttemptsDrawer({attempts}) {
   </Drawer>
 }
 
-export default function EditorPage() {
+export default function EditorPage({ params }) {
   const [language, setLanguage] = useState("C")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [problemDescription, setProblemDescription] = useState({})
+  const pk = params.id;
+
+  useEffect(() => {
+    getPuzzle(pk).then(response => {
+      setProblemDescription(response.data)
+    })
+    .catch(err => {
+      setErrorMessage(errorMessage)
+    })
+  }, [])
 
   return (
     <div className="flex flex-col h-screen">
@@ -99,9 +112,9 @@ export default function EditorPage() {
       </header>
       <div className="flex-1 grid grid-cols-[1fr_2fr]">
 
-        <PuzzleText title="Feng shui" description="Problem description" example={{
+        <PuzzleText title={problemDescription.title} description={problemDescription.description} example={{
           givenInput: "[1,2,3,4]", expectedOutput: "99"
-        }} constr={{ mem: "512M", cpu: "200 sec" }}></PuzzleText>
+        }} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
         <div className="bg-background p-6 overflow-auto">
           <Textarea
