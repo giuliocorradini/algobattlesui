@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPuzzle } from "@/lib/api/puzzle"
+import { getPuzzle, getPuzzlePublicTests } from "@/lib/api/puzzle"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -24,7 +24,23 @@ function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   </DropdownMenu>
 }
 
-function PuzzleText({ title, description, example: { givenInput, expectedOutput }, constr: { mem, cpu } }) {
+function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
+  function Example() {
+    if (example === undefined)
+      return <p>
+        No additional examples available.
+      </p>
+    else
+      return <>
+        <p>
+          For <code>{example.input}</code>
+        </p>
+        <p>
+          the output should be <code>{example.output}</code>
+        </p>
+      </>
+  }
+
   return <div className="bg-muted p-6 overflow-auto">
     <h2 className="text-2xl font-bold mb-4">{title}</h2>
     <div className="prose text-muted-foreground">
@@ -33,9 +49,7 @@ function PuzzleText({ title, description, example: { givenInput, expectedOutput 
       </p>
 
       <h3>Example</h3>
-      <p>
-        For <code>{givenInput}</code>, the output should be <code>{expectedOutput}</code>.
-      </p>
+      <Example />
 
       <h3>Constraints</h3>
       <p>
@@ -85,15 +99,23 @@ export default function EditorPage({ params }) {
   const [language, setLanguage] = useState("C")
   const [errorMessage, setErrorMessage] = useState("")
   const [problemDescription, setProblemDescription] = useState({})
-  const pk = params.id;
+  const [publicTests, setPublicTests] = useState([])
+  const pk = params.id
+
+  const exampleTest = publicTests.at(0)
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
       setProblemDescription(response.data)
     })
     .catch(err => {
-      setErrorMessage(errorMessage)
+      setErrorMessage(err)
     })
+
+    getPuzzlePublicTests(pk).then(response => {
+      setPublicTests(response.data)
+    })
+    .catch(err => setErrorMessage(err))
   }, [])
 
   return (
@@ -112,9 +134,7 @@ export default function EditorPage({ params }) {
       </header>
       <div className="flex-1 grid grid-cols-[1fr_2fr]">
 
-        <PuzzleText title={problemDescription.title} description={problemDescription.description} example={{
-          givenInput: "[1,2,3,4]", expectedOutput: "99"
-        }} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
+        <PuzzleText title={problemDescription.title} description={problemDescription.description} example={exampleTest} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
         <div className="bg-background p-6 overflow-auto">
           <Textarea
