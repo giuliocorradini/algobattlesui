@@ -1,10 +1,13 @@
+'use client'
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { SwordsIcon, ChevronRightIcon, PlusIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon } from "lucide-react"
+import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon } from "lucide-react"
+import { logoutRequest, setToken } from "@/lib/api"
 
 function LoggedInActions() {
   return <>
@@ -91,7 +94,13 @@ function PuzzleCollection({ collectionName, content }) {
 }
 
 function AccountButton({username, email, image}) {
-  <DropdownMenu>
+  function handleLogout() {
+    logoutRequest().then(response => {}).catch(error => {})
+    setToken("")
+    //TODO: set logged in status to false
+  }
+
+  return <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="ghost" size="icon" className="rounded-full">
         <img
@@ -111,7 +120,7 @@ function AccountButton({username, email, image}) {
       <DropdownMenuItem>My Account</DropdownMenuItem>
       <DropdownMenuItem>Settings</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Logout</DropdownMenuItem>
+      <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 }
