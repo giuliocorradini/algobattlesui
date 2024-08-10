@@ -1,4 +1,4 @@
-import { client, getAuthorizationTokenHeader, getToken } from "../api";
+import { client, getAuthorizationTokenHeader, getToken } from ".";
 import { Base64 } from "js-base64";
 
 export function getPuzzle(pk) {

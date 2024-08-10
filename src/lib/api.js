@@ -7,7 +7,7 @@ export function getToken() {
     return token;
 }
 
-function getAuthorizationTokenHeader() {
+export function getAuthorizationTokenHeader() {
     return {"Authorization" : `Token ${token}`}
 }
 

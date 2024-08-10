@@ -2,18 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './globals.css'
-import HomePage from './app/home';
+import HomePage from './routes/home';
 import reportWebVitals from './reportWebVitals';
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import EditorPage from './routes/editor/editor';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
   },
+  {
+    path: "/editor/:pk",
+    element: <EditorPage />
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

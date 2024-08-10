@@ -1,11 +1,12 @@
 'use client'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../../components/ui/dropdown-menu"
+import { Button } from "../../components/ui/button"
+import { Textarea } from "../../components/ui/textarea"
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../../components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "@/lib/api/puzzle"
+import { getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
+import { useParams } from "react-router-dom"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -95,13 +96,13 @@ function AttemptsDrawer({attempts}) {
   </Drawer>
 }
 
-export default function EditorPage({ params }) {
+export default function EditorPage() {
   const [language, setLanguage] = useState("C")
   const [errorMessage, setErrorMessage] = useState("")
   const [problemDescription, setProblemDescription] = useState({})
   const [publicTests, setPublicTests] = useState([])
   const [editorContent, setEditorContent] = useState("")
-  const pk = params.id
+  const { pk } = useParams();
 
   const exampleTest = publicTests.at(0)
 
