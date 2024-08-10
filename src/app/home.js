@@ -1,13 +1,13 @@
 'use client'
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { NavLink } from "react-router-dom"
+import { Button } from "../components/ui/button"
+import { Sheet, SheetTrigger, SheetContent } from "../components/ui/sheet"
+import { Input } from "../components/ui/input"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
+import { Card, CardContent, CardFooter } from "../components/ui/card"
 import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon } from "lucide-react"
-import { logoutRequest, setToken } from "@/lib/api"
+import { logoutRequest, setToken } from "../lib/api"
 
 function LoggedInActions() {
   return <>
@@ -40,14 +40,14 @@ function Actions({ isLogged }) {
 
 function CategoryElement({ name, link }) {
   return <>
-    <Link
+    <NavLink
       href={link}
       className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
       prefetch={false}
     >
       <span>{name}</span>
       <ChevronRightIcon className="h-4 w-4" />
-    </Link>
+    </NavLink>
   </>
 }
 
@@ -72,7 +72,7 @@ function PuzzleCollectionCard({ title, difficulty, categories, pk }) {
       <div className="text-sm font-medium">{title}</div>
       <div className="text-xs text-muted-foreground">{difficulty}</div>
     </CardFooter>
-    <Link href={`/editor/${pk}`} >Open</Link>
+    <NavLink href={`/editor/${pk}`} >Open</NavLink>
   </Card>
 }
 
@@ -80,9 +80,9 @@ function PuzzleCollection({ collectionName, content }) {
   return <section>
     <div className="flex items-center justify-between">
       <h2 className="text-lg font-semibold">{collectionName}</h2>
-      <Link href="#" className="text-sm font-medium text-primary hover:underline" prefetch={false}>
+      <NavLink href="#" className="text-sm font-medium text-primary hover:underline" prefetch={false}>
         View all
-      </Link>
+      </NavLink>
     </div>
     <div className="mt-4 flex gap-4 overflow-auto">
 
@@ -126,7 +126,7 @@ function AccountButton({username, email, image}) {
   </DropdownMenu>
 }
 
-export default function Home() {
+export default function HomePage() {
   const highlight_categories = [
     { name: "Greedy", link: "greedy" },
     { name: "Divide and conquer", link: "dac" },
@@ -140,10 +140,10 @@ export default function Home() {
     <div className="flex min-h-screen w-full">
       <aside className="hidden w-64 shrink-0 border-r bg-background md:flex flex-col">
         <div className="sticky top-0 flex h-14 items-center justify-between border-b px-4">
-          <Link href="#" className="flex items-center gap-2 font-bold" prefetch={false}>
+          <NavLink href="#" className="flex items-center gap-2 font-bold" prefetch={false}>
             <SwordsIcon className="h-6 w-6" />
             AlgoBattles
-          </Link>
+          </NavLink>
         </div>
         <nav className="flex flex-1 flex-col space-y-1 overflow-auto p-4">
           <div className="px-2 text-xs font-medium text-muted-foreground">Categories</div>
@@ -188,7 +188,7 @@ export default function Home() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
-          <AccountButton username="dummy" email="dummy@algobattles.com"></AccountButton>
+          <AccountButton username="dummy" email="dummy..algobattles.com"></AccountButton>
 
          
         </header>
