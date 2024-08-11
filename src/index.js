@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './globals.css'
@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import EditorPage from './routes/editor/editor';
 import LoginPage from './routes/login/login';
+import { AuthenticationContext } from './lib/api';
+import { useState } from 'react';
 
 const router = createBrowserRouter([
   {
@@ -26,10 +28,22 @@ const router = createBrowserRouter([
   }
 ]);
 
+function RouterProviderWithAuthenticationContext() {
+  const [ [isLogged, token], setAuthentication ] = useState([false, null])
+
+  return <AuthenticationContext.Provider value={{
+    isLogged: isLogged,
+    token: token,
+    setAuthentication: setAuthentication
+  }}>
+    <RouterProvider router={router} />
+  </AuthenticationContext.Provider>
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <RouterProviderWithAuthenticationContext />
   </React.StrictMode>
 );
 

@@ -3,9 +3,14 @@
 import axios from "axios";
 import { createContext } from "react";
 
+/**
+ * This context is used by authentication aware components. Values are defined in index.js
+ * as a state and passed to the AuthenticationContext provider.
+ */
 export const AuthenticationContext = createContext({
     isLogged: false,
-    token: null
+    token: null,
+    setAuthentication: (isLogged, token) => {}
 })
 
 export function getToken() {
@@ -18,6 +23,7 @@ export function getAuthorizationTokenHeader() {
 
 export function setToken(tok) {
     AuthenticationContext.token = tok
+    AuthenticationContext.isLogged = true
 }
 
 export const client = axios.create({

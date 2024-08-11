@@ -31,7 +31,8 @@ function LoginForm() {
     loginRequest(username, password)
     .then((response) => {
       if (response.status == 200 && 'token' in response.data) {
-        setToken(response.data.token);
+        auth.setAuthentication([true, response.data.token]);
+        navigate("/")
       }
       else
         setError(true);
