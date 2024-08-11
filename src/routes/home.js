@@ -96,7 +96,8 @@ function PuzzleCollection({ collectionName, content }) {
   </section>
 }
 
-function AccountButton({username, email, image}) {
+function AccountButton({username, email, picture}) {
+  const navigate = useNavigate();
   const auth = useContext(AuthenticationContext)
 
   function handleLogout() {
@@ -104,38 +105,43 @@ function AccountButton({username, email, image}) {
     auth.setAuthentication([false, null])
   }
 
+  function DefaultUserImage() {
+    return <UserRound
+      width="32"
+      height="32"
+      className="rounded-full"
+      alt="Avatar"
+      style={{ aspectRatio: "32/32", objectFit: "cover" }}
+    />
+  }
+
   if (auth.isLogged === false)
     return <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full">
-          <UserRound
-            width="32"
-            height="32"
-            className="rounded-full"
-            alt="Avatar"
-            style={{ aspectRatio: "32/32", objectFit: "cover" }}
-          />
+          <DefaultUserImage />
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Link to="/login">Login</Link>
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/login")}>Login</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
 
   return <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="ghost" size="icon" className="rounded-full">
-        <img
-          src={image}
-          width="32"
-          height="32"
-          className="rounded-full"
-          alt="Avatar"
-          style={{ aspectRatio: "32/32", objectFit: "cover" }}
-        />
+        {
+          picture === null ? <DefaultUserImage /> :
+          <img
+            src={picture}
+            width="32"
+            height="32"
+            className="rounded-full"
+            alt="Avatar"
+            style={{ aspectRatio: "32/32", objectFit: "cover" }}
+          />
+        }
         <span className="sr-only">Toggle user menu</span>
       </Button>
     </DropdownMenuTrigger>
@@ -222,7 +228,7 @@ export default function HomePage() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
-          <AccountButton username={user.username} email={user.email} image={user.image}></AccountButton>
+          <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
 
          
         </header>
