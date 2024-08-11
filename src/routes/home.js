@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Sheet, SheetTrigger, SheetContent } from "../components/ui/sheet"
 import { Input } from "../components/ui/input"
@@ -6,8 +6,8 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Card, CardContent, CardFooter } from "../components/ui/card"
 import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound } from "lucide-react"
 import { AuthenticationContext, logoutRequest, setToken } from "../lib/api"
-import { useContext } from "react"
-import { redirect } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
+import { FetchUserInfo } from "../lib/api/user"
 
 function LoggedInActions() {
   return <>
@@ -22,9 +22,11 @@ function LoggedInActions() {
   </>
 }
 
-function AnonumousActions() {
+function AnonymousActions() {
+  const navigate = useNavigate();
+
   return <>
-    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left">
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => navigate("/login")}>
       <CircleUserIcon className="h-4 w-4" />
       <span>Login</span>
     </Button>
@@ -35,7 +37,7 @@ function Actions({ isLogged }) {
   if (isLogged)
     return <LoggedInActions></LoggedInActions>
   else
-    return <AnonumousActions></AnonumousActions>
+    return <AnonymousActions></AnonymousActions>
 }
 
 function CategoryElement({ name, link }) {
@@ -99,8 +101,7 @@ function AccountButton({username, email, image}) {
 
   function handleLogout() {
     logoutRequest().then(response => {}).catch(error => {})
-    setToken("")
-    //TODO: set logged in status to false
+    auth.setAuthentication([false, null])
   }
 
   if (auth.isLogged === false)
@@ -157,7 +158,17 @@ export default function HomePage() {
     { name: "Computational geometry", link: "geom" }
   ]
 
-  const isLogged = true
+  const { isLogged, token, ...auth } = useContext(AuthenticationContext)
+
+  const [user, setUser] = useState({})
+
+  useEffect(() => {
+    if(isLogged)
+      FetchUserInfo(token).then((response) => {
+        if (response.status === 200)
+          setUser(response.data)
+      }).catch(err => {})
+  }, [isLogged])
 
   return (
     <div className="flex min-h-screen w-full">
@@ -211,7 +222,7 @@ export default function HomePage() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
-          <AccountButton username="dummy" email="dummy..algobattles.com"></AccountButton>
+          <AccountButton username={user.username} email={user.email} image={user.image}></AccountButton>
 
          
         </header>
