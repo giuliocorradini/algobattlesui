@@ -1,6 +1,5 @@
-'use client'
-
-import { Button } from "@/components/ui/button"
+import { redirect, useNavigate } from "react-router-dom"
+import { Button } from "../../components/ui/button"
 import {
   Card,
   CardContent,
@@ -8,25 +7,28 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { client, loginRequest, setToken } from "@/src/lib/api"
-import { redirect } from "next/navigation"
+} from "../../components/ui/card"
+import { Input } from "../../components/ui/input"
+import { Label } from "../../components/ui/label"
+import { client, loginRequest, setToken } from "../../lib/api"
 import { useState } from "react"
 
 export default function LoginForm() {
   const [isError, setError] = useState(false);
+  const navigate = useNavigate();
 
-  function performLogin(formData) {
-    const username = formData.get("username")
-    const password = formData.get("password")
+  function performLogin(evt) {
+    evt.preventDefault()
+
+    const formData = evt.target;
+    const username = formData.username.value;
+    const password = formData.password.value;
 
     loginRequest(username, password)
     .then((response) => {
       if (response.status == 200 && 'token' in response.data) {
         setToken(response.data.token);
-        //TODO: client reroute to home
+        navigate("/")
       }
       else
         setError(true);
@@ -37,7 +39,7 @@ export default function LoginForm() {
   }
 
   return (
-    <form action={performLogin}>
+    <form onSubmit={performLogin}>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>

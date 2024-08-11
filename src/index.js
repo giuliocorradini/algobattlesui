@@ -9,6 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import EditorPage from './routes/editor/editor';
+import LoginForm from './routes/login/login';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/editor/:pk",
     element: <EditorPage />
+  },
+  {
+    path: "/login",
+    element: <LoginForm />
   }
 ]);
 
