@@ -1,18 +1,23 @@
 'use client'
 
 import axios from "axios";
+import { createContext } from "react";
 
-let token = "";
+export const AuthenticationContext = createContext({
+    isLogged: false,
+    token: null
+})
+
 export function getToken() {
-    return token;
+    return AuthenticationContext.token
 }
 
 export function getAuthorizationTokenHeader() {
-    return {"Authorization" : `Token ${token}`}
+    return {"Authorization" : `Token ${AuthenticationContext.token}`}
 }
 
 export function setToken(tok) {
-    token = tok;
+    AuthenticationContext.token = tok
 }
 
 export const client = axios.create({
@@ -31,7 +36,7 @@ export function loginRequest(username, password) {
 
 export function logoutRequest() {
     return client.get("/auth/logout/", {
-        headers: {"Authorization": `Token ${token}`}
+        headers: getAuthorizationTokenHeader()
     })
 }
 

@@ -10,12 +10,16 @@ import {
 } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
-import { client, loginRequest, setToken } from "../../lib/api"
-import { useState } from "react"
+import { AuthenticationContext, client, loginRequest, setToken } from "../../lib/api"
+import { useContext, useState } from "react"
 
-export default function LoginForm() {
+function LoginForm() {
   const [isError, setError] = useState(false);
   const navigate = useNavigate();
+  const auth = useContext(AuthenticationContext)
+
+  if (auth.isLogged)
+    navigate("/")
 
   function performLogin(evt) {
     evt.preventDefault()
@@ -28,7 +32,6 @@ export default function LoginForm() {
     .then((response) => {
       if (response.status == 200 && 'token' in response.data) {
         setToken(response.data.token);
-        navigate("/")
       }
       else
         setError(true);
@@ -64,4 +67,10 @@ export default function LoginForm() {
       </Card>
     </form>
   )
+}
+
+export default function LoginPage() {
+  return <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <LoginForm />
+  </div>
 }

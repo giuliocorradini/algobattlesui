@@ -1,13 +1,13 @@
-'use client'
-
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Sheet, SheetTrigger, SheetContent } from "../components/ui/sheet"
 import { Input } from "../components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "../components/ui/card"
-import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon } from "lucide-react"
-import { logoutRequest, setToken } from "../lib/api"
+import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound } from "lucide-react"
+import { AuthenticationContext, logoutRequest, setToken } from "../lib/api"
+import { useContext } from "react"
+import { redirect } from "react-router-dom"
 
 function LoggedInActions() {
   return <>
@@ -95,11 +95,34 @@ function PuzzleCollection({ collectionName, content }) {
 }
 
 function AccountButton({username, email, image}) {
+  const auth = useContext(AuthenticationContext)
+
   function handleLogout() {
     logoutRequest().then(response => {}).catch(error => {})
     setToken("")
     //TODO: set logged in status to false
   }
+
+  if (auth.isLogged === false)
+    return <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <UserRound
+            width="32"
+            height="32"
+            className="rounded-full"
+            alt="Avatar"
+            style={{ aspectRatio: "32/32", objectFit: "cover" }}
+          />
+          <span className="sr-only">Toggle user menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>
+          <Link to="/login">Login</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
 
   return <DropdownMenu>
     <DropdownMenuTrigger asChild>
