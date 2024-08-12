@@ -1,7 +1,7 @@
 'use client'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../../components/ui/dropdown-menu"
 import { Button } from "../../components/ui/button"
-import { Textarea } from "../../components/ui/textarea"
+import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../../components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -155,7 +155,11 @@ export default function EditorPage() {
             value={editorContent}
             onChange={e => setEditorContent(e.target.value)}
             placeholder="Write your code here..."
-            className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none"
+            className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none font-mono"
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
           />
         </div>
       </div>
