@@ -1,3 +1,4 @@
+import React from "react"
 import { Button } from "../../components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card"
 import { Label } from "../../components/ui/label"
@@ -23,6 +24,30 @@ function Header() {
             <AccountButton></AccountButton>
         </div>
     </header>
+}
+
+function StickyPageNavigation({title, children}) {
+    const [active, setActive] = useState(0)
+
+    /**
+     * @returns Classname only if element is active. Otherwise empty
+     */
+    function activeCn(key) {
+        if (key == active)
+            return "font-semibold text-primary"
+        return ""
+    }
+
+    return <div className="sticky top-10">
+        <nav className="text-sm text-muted-foreground grid gap-4">
+            <div className="max-w-6xl w-full mx-auto text-primary">
+                <h1 className="font-semibold text-3xl">{title}</h1>
+            </div>
+            {children.map(
+                (child, i) => {return React.cloneElement(child, {onClick: () => setActive(i), key: i, className: activeCn(i)})}
+            )}
+        </nav>
+    </div>
 }
 
 export default function SettingsPage() {
@@ -115,20 +140,20 @@ export default function SettingsPage() {
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
             <Header></Header>
             <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
-                <div className="max-w-6xl w-full mx-auto grid gap-2">
-                    <h1 className="font-semibold text-3xl">Settings</h1>
-                </div>
                 <div className="grid md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr] items-start gap-6 max-w-6xl w-full mx-auto">
-                    <nav className="text-sm text-muted-foreground grid gap-4">
-                        <Link href="#" className="font-semibold text-primary" prefetch={false}>
+                    <StickyPageNavigation title="Settings">
+                        <a href="#profile" >
                             Profile
-                        </Link>
-                        <Link href="#" prefetch={false}>
+                        </a>
+                        <a href="#picture">
+                            Picture
+                        </a>
+                        <a href="#password">
                             Password
-                        </Link>
-                    </nav>
+                        </a>
+                    </StickyPageNavigation>
                     <div className="grid gap-6">
-                        <Card>
+                        <Card id="profile">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
                             </CardHeader>
@@ -166,7 +191,7 @@ export default function SettingsPage() {
                                 </CardContent>
                             </form>
                         </Card>
-                        <Card>
+                        <Card id="picture">
                             <CardHeader>
                                 <CardTitle>Edit Picture</CardTitle>
                             </CardHeader>
@@ -191,7 +216,7 @@ export default function SettingsPage() {
                                 </CardContent>
                             </form>
                         </Card>
-                        <Card>
+                        <Card id="password">
                             <CardHeader>
                                 <CardTitle>Password</CardTitle>
                             </CardHeader>
