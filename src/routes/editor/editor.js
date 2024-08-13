@@ -102,9 +102,7 @@ export default function EditorPage() {
   const [problemDescription, setProblemDescription] = useState({})
   const [publicTests, setPublicTests] = useState([])
   const [editorContent, setEditorContent] = useState("")
-
-  const [lineCount, setLineCount] = useState(1);
-
+  const lineCount = editorContent.split("\n").length
 
   const { pk } = useParams();
 
@@ -154,7 +152,7 @@ export default function EditorPage() {
 
         <PuzzleText title={problemDescription.title} description={problemDescription.description} example={exampleTest} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
-        <div className="bg-background p-6 overflow-auto">
+        <div className="relative bg-background p-6 overflow-auto">
           <div className="absolute top-0 left-0 w-8 bg-gray-100 text-gray-500 text-right pr-2 pt-2 pb-2 select-none">
             {Array.from({ length: lineCount }, (_, i) => (
               <div key={i + 1}>{i + 1}</div>
