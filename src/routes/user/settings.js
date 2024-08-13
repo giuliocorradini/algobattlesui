@@ -4,37 +4,68 @@ import { Label } from "../../components/ui/label"
 import { Input } from "../../components/ui/input"
 import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar"
 import { Switch } from "../../components/ui/switch"
-import { Link } from "react-router-dom"
-import { FrameIcon } from "lucide-react"
+import { Form, Link, useNavigate } from "react-router-dom"
+import { SwordsIcon } from "lucide-react"
 import { AccountButton } from "../home"
+import { useContext, useEffect, useState } from "react"
+import { AuthenticationContext } from "../../lib/api"
+import { FetchUserInfo, UpdateUserInfo } from "../../lib/api/user"
 
 function Header() {
     return <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
-                <Link href="#" className="flex items-center gap-2 text-lg font-semibold sm:text-base mr-4" prefetch={false}>
-                    <FrameIcon className="w-6 h-6" />
-                    <span className="sr-only">Acme Inc</span>
-                </Link>
+          <Link to="/" className="flex items-center gap-2 font-bold">
+            <SwordsIcon className="h-6 w-6" />
+            AlgoBattles
+          </Link>
                 <nav className="hidden font-medium sm:flex flex-row items-center gap-5 text-sm lg:gap-6">
-                    <Link href="#" className="text-muted-foreground" prefetch={false}>
-                        Projects
-                    </Link>
-                    <Link href="#" className="text-muted-foreground" prefetch={false}>
-                        Deployments
-                    </Link>
-                    <Link href="#" className="text-muted-foreground" prefetch={false}>
-                        Analytics
-                    </Link>
-                    <Link href="#" className="font-bold" prefetch={false}>
-                        Settings
-                    </Link>
                 </nav>
-                    <AccountButton></AccountButton>
                 <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
+                    <AccountButton></AccountButton>
                 </div>
             </header>
 }
 
 export default function SettingsPage() {
+    const [userData, setUserData] = useState({})
+    const auth = useContext(AuthenticationContext)
+    console.log(auth)
+    const navigate = useNavigate()
+
+    if (!auth.isLogged)
+        navigate("/login")
+
+    useEffect(() => {
+        FetchUserInfo(auth.token)
+        .then(response => {
+            setUserData(response.data)
+        })
+        .catch(err => {})
+    }, [])
+
+    function handleSubmit(evt) {
+        evt.preventDefault()
+
+        const formData = evt.target;
+        const requestData = {
+            username: formData.username.value,
+            email: formData.email.value,
+            first_name: formData.first_name.value,
+            last_name: formData.last_name.value,
+            github: formData.github.value,
+            linkedin: formData.linkedin.value
+        }
+
+        UpdateUserInfo(auth.token, requestData)
+        .then(response => {
+            //show successful update message
+        })
+        .catch(err => {
+            //show error message
+        })
+    }
+
+    //make the update button active when default data is changed
+
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
             <Header></Header>
@@ -57,22 +88,23 @@ export default function SettingsPage() {
                                 <CardTitle>Profile</CardTitle>
                             </CardHeader>
                             <CardContent className="grid gap-6">
+                                <form onSubmit={handleSubmit}>
                                 <div className="grid gap-2">
                                     <Label htmlFor="username">Username</Label>
-                                    <Input id="username" defaultValue="johndoe" />
+                                    <Input id="username" defaultValue={userData.username} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue="john@example.com" />
+                                    <Input id="email" type="email" defaultValue={userData.email} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="firstName">First Name</Label>
-                                        <Input id="firstName" defaultValue="John" />
+                                        <Input id="first_name" defaultValue={userData.first_name} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="lastName">Last Name</Label>
-                                        <Input id="lastName" defaultValue="Doe" />
+                                        <Input id="last_name" defaultValue={userData.last_name} />
                                     </div>
                                 </div>
                                 <div className="grid gap-2">
@@ -89,15 +121,16 @@ export default function SettingsPage() {
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="address">Github Profile</Label>
-                                    <Input id="address" defaultValue="@github" />
+                                    <Input id="github" defaultValue={userData.github} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="address">Linkedin</Label>
-                                    <Input id="address" defaultValue="@linkedin" />
+                                    <Input id="linkedin" defaultValue={userData.linkedin} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Button size="sm">Update</Button>
                                 </div>
+                                </form>
                             </CardContent>
                         </Card>
                         <Card>

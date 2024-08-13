@@ -8,3 +8,9 @@ export function FetchUserInfo(token) {
         headers: {Authorization: `Token ${token}`}
     })
 }
+
+export function UpdateUserInfo(token, data) {
+    return client.patch("/user", data, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}
