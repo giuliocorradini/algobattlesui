@@ -9,36 +9,37 @@ import { SwordsIcon } from "lucide-react"
 import { AccountButton } from "../home"
 import { useContext, useEffect, useState } from "react"
 import { AuthenticationContext } from "../../lib/api"
-import { FetchUserInfo, UpdatePassword, UpdateUserInfo } from "../../lib/api/user"
+import { FetchUserInfo, UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/user"
 
 function Header() {
     return <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
-          <Link to="/" className="flex items-center gap-2 font-bold">
+        <Link to="/" className="flex items-center gap-2 font-bold">
             <SwordsIcon className="h-6 w-6" />
             AlgoBattles
-          </Link>
-                <nav className="hidden font-medium sm:flex flex-row items-center gap-5 text-sm lg:gap-6">
-                </nav>
-                <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
-                    <AccountButton></AccountButton>
-                </div>
-            </header>
+        </Link>
+        <nav className="hidden font-medium sm:flex flex-row items-center gap-5 text-sm lg:gap-6">
+        </nav>
+        <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
+            <AccountButton></AccountButton>
+        </div>
+    </header>
 }
 
 export default function SettingsPage() {
     const [userData, setUserData] = useState({})
     const auth = useContext(AuthenticationContext)
     const navigate = useNavigate()
+    const initials = userData.username ? userData.username.substring(0, 2) : ""
 
     if (!auth.isLogged)
         navigate("/login")
 
     useEffect(() => {
         FetchUserInfo(auth.token)
-        .then(response => {
-            setUserData(response.data)
-        })
-        .catch(err => {})
+            .then(response => {
+                setUserData(response.data)
+            })
+            .catch(err => { })
     }, [])
 
     function handleSubmit(evt) {
@@ -55,12 +56,12 @@ export default function SettingsPage() {
         }
 
         UpdateUserInfo(auth.token, requestData)
-        .then(response => {
-            //show successful update message
-        })
-        .catch(err => {
-            //show error message
-        })
+            .then(response => {
+                //show successful update message
+            })
+            .catch(err => {
+                //show error message
+            })
     }
 
     function handlePasswordSubmit(evt) {
@@ -74,22 +75,41 @@ export default function SettingsPage() {
         if (new_password != password_repeat) {
             console.log(password_repeat)//show an error prompt
         }
-        
+
 
         UpdatePassword(auth.token, {
             new_password: new_password,
             old_password: old_password
         })
-        .then(response => {
-            //show success message
-        })
-        .catch(err => {
-            //show error
-            //reason is transmitted alonside response
-        })
+            .then(response => {
+                //show success message
+            })
+            .catch(err => {
+                //show error
+                //reason is transmitted alonside response
+            })
     }
 
-    //make the update button active when default data is changed
+    const [image, setImage] = useState()
+    function handlePictureSubmit(evt) {
+        evt.preventDefault()
+
+        console.log(image)
+        let formData = new FormData()
+        formData.append("picture", image)
+
+        UploadPicture(auth.token, formData)
+            .then(response => {
+                setUserData({
+                    ...userData,
+                    ...response
+                })
+            })
+            .catch(err => { console.log(err) })
+    }
+
+    //TODO: make the update button active when default data is changed
+    //TODO: set maximum file size for picture
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
@@ -112,74 +132,87 @@ export default function SettingsPage() {
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
                             </CardHeader>
-                            <CardContent className="grid gap-6">
-                                <form onSubmit={handleSubmit}>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input id="username" defaultValue={userData.username} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue={userData.email} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
+                            <form onSubmit={handleSubmit}>
+                                <CardContent className="grid gap-6">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="firstName">First Name</Label>
-                                        <Input id="first_name" defaultValue={userData.first_name} />
+                                        <Label htmlFor="username">Username</Label>
+                                        <Input id="username" defaultValue={userData.username} />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="lastName">Last Name</Label>
-                                        <Input id="last_name" defaultValue={userData.last_name} />
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input id="email" type="email" defaultValue={userData.email} />
                                     </div>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label>Profile Picture</Label>
-                                    <div className="flex items-center gap-4">
-                                        <Avatar className="h-16 w-16">
-                                            <AvatarImage src="/placeholder-user.jpg" alt="../..shadcn" />
-                                            <AvatarFallback>JD</AvatarFallback>
-                                        </Avatar>
-                                        <Button variant="outline" size="sm">
-                                            Upload
-                                        </Button>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="firstName">First Name</Label>
+                                            <Input id="first_name" defaultValue={userData.first_name} />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="lastName">Last Name</Label>
+                                            <Input id="last_name" defaultValue={userData.last_name} />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="address">Github Profile</Label>
-                                    <Input id="github" defaultValue={userData.github} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="address">Linkedin</Label>
-                                    <Input id="linkedin" defaultValue={userData.linkedin} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Button size="sm">Update</Button>
-                                </div>
-                                </form>
-                            </CardContent>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="address">Github Profile</Label>
+                                        <Input id="github" defaultValue={userData.github} />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="address">Linkedin</Label>
+                                        <Input id="linkedin" defaultValue={userData.linkedin} />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Button size="sm">Update</Button>
+                                    </div>
+                                </CardContent>
+                            </form>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Edit Picture</CardTitle>
+                            </CardHeader>
+                            <form method="post" type="multipart" onSubmit={handlePictureSubmit}>
+                                <CardContent className="grid gap-6">
+                                    <div className="grid gap-2">
+                                        <Label>Current</Label>
+                                        <div className="flex items-center gap-4">
+                                            <Avatar className="h-16 w-16">
+                                                <AvatarImage src={userData.picture} alt="../..shadcn" />
+                                                <AvatarFallback>{initials}</AvatarFallback>
+                                            </Avatar>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Select a new picture</Label>
+                                        <div className="flex items-center gap-4">
+                                            <Input type="file" accept="image/*" onChange={e => setImage(e.target.files[0])} />
+                                            <Button type="submit">Upload</Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </form>
                         </Card>
                         <Card>
                             <CardHeader>
                                 <CardTitle>Password</CardTitle>
                             </CardHeader>
                             <form onSubmit={handlePasswordSubmit}>
-                            <CardContent className="grid gap-6">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="old_password">Old password</Label>
-                                    <Input id="old_password" name="old_password" type="password" />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="new_password">New password</Label>
-                                    <Input id="new_password" name="new_password" type="password" />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="new_password_check">Repeat new password</Label>
-                                    <Input id="new_password_check" name="new_password_check" type="password" />
-                                </div>
-                            </CardContent>
-                            <CardContent className="grid gap-6">
-                                <Button type="submit" variant="destructive">Change password</Button>
-                            </CardContent>
+                                <CardContent className="grid gap-6">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="old_password">Old password</Label>
+                                        <Input id="old_password" name="old_password" type="password" />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="new_password">New password</Label>
+                                        <Input id="new_password" name="new_password" type="password" />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="new_password_check">Repeat new password</Label>
+                                        <Input id="new_password_check" name="new_password_check" type="password" />
+                                    </div>
+                                </CardContent>
+                                <CardContent className="grid gap-6">
+                                    <Button type="submit" variant="destructive">Change password</Button>
+                                </CardContent>
                             </form>
                         </Card>
                     </div>

@@ -20,3 +20,12 @@ export function UpdatePassword(token, data) {
         headers: { Authorization: `Token ${token}` }
     })
 }
+
+export function UploadPicture(token, formData) {
+    return client.put("/user/picture", formData, {
+        headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
