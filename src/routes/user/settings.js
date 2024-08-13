@@ -9,7 +9,7 @@ import { SwordsIcon } from "lucide-react"
 import { AccountButton } from "../home"
 import { useContext, useEffect, useState } from "react"
 import { AuthenticationContext } from "../../lib/api"
-import { FetchUserInfo, UpdateUserInfo } from "../../lib/api/user"
+import { FetchUserInfo, UpdatePassword, UpdateUserInfo } from "../../lib/api/user"
 
 function Header() {
     return <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
@@ -28,7 +28,6 @@ function Header() {
 export default function SettingsPage() {
     const [userData, setUserData] = useState({})
     const auth = useContext(AuthenticationContext)
-    console.log(auth)
     const navigate = useNavigate()
 
     if (!auth.isLogged)
@@ -61,6 +60,32 @@ export default function SettingsPage() {
         })
         .catch(err => {
             //show error message
+        })
+    }
+
+    function handlePasswordSubmit(evt) {
+        evt.preventDefault()
+
+        const formData = evt.target;
+        const new_password = formData.new_password.value
+        const old_password = formData.old_password.value
+        const password_repeat = formData.new_password_check.value
+
+        if (new_password != password_repeat) {
+            console.log(password_repeat)//show an error prompt
+        }
+        
+
+        UpdatePassword(auth.token, {
+            new_password: new_password,
+            old_password: old_password
+        })
+        .then(response => {
+            //show success message
+        })
+        .catch(err => {
+            //show error
+            //reason is transmitted alonside response
         })
     }
 
@@ -137,19 +162,25 @@ export default function SettingsPage() {
                             <CardHeader>
                                 <CardTitle>Password</CardTitle>
                             </CardHeader>
+                            <form onSubmit={handlePasswordSubmit}>
                             <CardContent className="grid gap-6">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Input id="password" type="password" />
+                                    <Label htmlFor="old_password">Old password</Label>
+                                    <Input id="old_password" name="old_password" type="password" />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">Repeat password</Label>
-                                    <Input id="password" type="password" />
+                                    <Label htmlFor="new_password">New password</Label>
+                                    <Input id="new_password" name="new_password" type="password" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="new_password_check">Repeat new password</Label>
+                                    <Input id="new_password_check" name="new_password_check" type="password" />
                                 </div>
                             </CardContent>
                             <CardContent className="grid gap-6">
-                                <Button variant="destructive">Delete Account</Button>
+                                <Button type="submit" variant="destructive">Change password</Button>
                             </CardContent>
+                            </form>
                         </Card>
                     </div>
                 </div>

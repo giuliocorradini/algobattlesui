@@ -14,3 +14,9 @@ export function UpdateUserInfo(token, data) {
         headers: { Authorization: `Token ${token}` }
     })
 }
+
+export function UpdatePassword(token, data) {
+    return client.put("/user/password", data, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}
