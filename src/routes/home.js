@@ -96,7 +96,7 @@ function PuzzleCollection({ collectionName, content }) {
   </section>
 }
 
-function AccountButton({username, email, picture}) {
+export function AccountButton({username, email, picture}) {
   const navigate = useNavigate();
   const auth = useContext(AuthenticationContext)
 
@@ -148,8 +148,7 @@ function AccountButton({username, email, picture}) {
     <DropdownMenuContent align="end">
       <DropdownMenuItem>{username}</DropdownMenuItem>
       <DropdownMenuItem>{email}</DropdownMenuItem>
-      <DropdownMenuItem>My Account</DropdownMenuItem>
-      <DropdownMenuItem>Settings</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
     </DropdownMenuContent>

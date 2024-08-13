@@ -12,6 +12,7 @@ import EditorPage from './routes/editor/editor';
 import LoginPage from './routes/login/login';
 import { AuthenticationContext } from './lib/api';
 import { useState } from 'react';
+import SettingsPage from './routes/user/settings';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />
+  },
+  {
+    path: "/settings",
+    element: <SettingsPage />
   }
 ]);
 
