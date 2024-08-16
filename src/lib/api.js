@@ -13,6 +13,11 @@ export const AuthenticationContext = createContext({
     setAuthentication: (isLogged, token) => {}
 })
 
+export const CurrentUserContext = createContext({
+    user: {},
+    setUser: user => {}
+})
+
 export function getToken() {
     return AuthenticationContext.token
 }

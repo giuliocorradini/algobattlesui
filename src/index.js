@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import EditorPage from './routes/editor/editor';
 import LoginPage from './routes/login/login';
-import { AuthenticationContext } from './lib/api';
+import { AuthenticationContext, CurrentUserContext } from './lib/api';
 import { useState } from 'react';
 import SettingsPage from './routes/user/settings';
 
@@ -34,14 +34,20 @@ const router = createBrowserRouter([
 ]);
 
 function RouterProviderWithAuthenticationContext() {
-  const [ [isLogged, token], setAuthentication ] = useState([false, null])
+  const [[isLogged, token], setAuthentication] = useState([false, null])
+  const [user, setUser] = useState({})
 
   return <AuthenticationContext.Provider value={{
     isLogged: isLogged,
     token: token,
     setAuthentication: setAuthentication
   }}>
-    <RouterProvider router={router} />
+    <CurrentUserContext.Provider value={{
+      user: user,
+      setUser: setUser
+    }}>
+      <RouterProvider router={router} />
+    </CurrentUserContext.Provider>
   </AuthenticationContext.Provider>
 }
 

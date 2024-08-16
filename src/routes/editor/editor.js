@@ -7,9 +7,11 @@ import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon } from "luc
 import { useEffect, useState } from "react"
 import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
 import { useParams } from "react-router-dom"
-import { AuthenticationContext } from "../../lib/api"
+import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { useContext } from "react"
 import { HomeButton } from "../../components/homebutton"
+import { FetchUserInfo } from "../../lib/api/user"
+import { AccountButton } from "../home"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -124,7 +126,8 @@ export default function EditorPage() {
 
   const exampleTest = publicTests.at(0)
 
-  const auth = useContext(AuthenticationContext)
+  const {isLogged, token, ...auth} = useContext(AuthenticationContext)
+  const {user, setUser} = useContext(CurrentUserContext)
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
@@ -144,6 +147,15 @@ export default function EditorPage() {
     })
     .catch(err => setErrorMessage(err))
   }, [])
+
+  useEffect(() => {
+    if (isLogged) {
+      FetchUserInfo(token).then((response) => {
+        if (response.status === 200)
+          setUser(response.data)
+      }).catch(err => {})
+    }
+  }, [isLogged])
 
   function sendAttempt() {
     puzzleAttemptRequest(pk, auth.token, language, editorContent)
@@ -168,6 +180,7 @@ export default function EditorPage() {
           <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
           <Button onClick={sendAttempt}>Build</Button>
           <AttemptsDrawer attempts={attempts}></AttemptsDrawer>
+          <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
         </div>
       </header>
       <div className="flex-1 grid grid-cols-[1fr_2fr]">

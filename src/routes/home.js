@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "../components/ui/card"
 import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound } from "lucide-react"
-import { AuthenticationContext, logoutRequest, setToken } from "../lib/api"
+import { AuthenticationContext, CurrentUserContext, logoutRequest, setToken } from "../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
 import { HomeButton } from "../components/homebutton"
@@ -165,8 +165,7 @@ export default function HomePage() {
   ]
 
   const { isLogged, token, ...auth } = useContext(AuthenticationContext)
-
-  const [user, setUser] = useState({})
+  const { user, setUser } = useContext(CurrentUserContext)
 
   useEffect(() => {
     if(isLogged)
