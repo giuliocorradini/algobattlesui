@@ -8,6 +8,7 @@ import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, Circl
 import { AuthenticationContext, logoutRequest, setToken } from "../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
+import { HomeButton } from "../components/homebutton"
 
 function LoggedInActions() {
   return <>
@@ -179,10 +180,7 @@ export default function HomePage() {
     <div className="flex min-h-screen w-full">
       <aside className="hidden w-64 shrink-0 border-r bg-background md:flex flex-col">
         <div className="sticky top-0 flex h-14 items-center justify-between border-b px-4">
-          <Link href="#" className="flex items-center gap-2 font-bold" prefetch={false}>
-            <SwordsIcon className="h-6 w-6" />
-            AlgoBattles
-          </Link>
+          <HomeButton />
         </div>
         <nav className="flex flex-1 flex-col space-y-1 overflow-auto p-4">
           <div className="px-2 text-xs font-medium text-muted-foreground">Categories</div>

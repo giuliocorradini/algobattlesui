@@ -3,10 +3,13 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Button } from "../../components/ui/button"
 import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../../components/ui/drawer"
-import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon } from "lucide-react"
+import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
+import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
 import { useParams } from "react-router-dom"
+import { AuthenticationContext } from "../../lib/api"
+import { useContext } from "react"
+import { HomeButton } from "../../components/homebutton"
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -88,12 +91,24 @@ function AttemptsDrawer({attempts}) {
       <div className="px-4 py-6 space-y-4">
 
         {attempts.map((att, i) => {
-          return <Attempt key={i} result={{...att}}></Attempt>
+          return <Attempt key={i} id={i} result={{...att}} isPassed={att.passed}></Attempt>
         })}
         
       </div>
     </DrawerContent>
   </Drawer>
+}
+
+function CompletionStatus({attempts}) {
+  const isCompleted = attempts.some(a => a.passed)
+
+  if (isCompleted)
+    return <div className="flex">
+      <p>Completed</p>
+      <CheckIcon className="ml-2 stroke-green-600"/>
+    </div>
+  else
+    return <></>
 }
 
 export default function EditorPage() {
@@ -103,10 +118,13 @@ export default function EditorPage() {
   const [publicTests, setPublicTests] = useState([])
   const [editorContent, setEditorContent] = useState("")
   const lineCount = editorContent.split("\n").length
+  const [attempts, setAttempts] = useState([])
 
   const { pk } = useParams();
 
   const exampleTest = publicTests.at(0)
+
+  const auth = useContext(AuthenticationContext)
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
@@ -120,10 +138,15 @@ export default function EditorPage() {
       setPublicTests(response.data)
     })
     .catch(err => setErrorMessage(err))
+
+    getPreviousAttempts(pk, auth.token).then(response => {
+      setAttempts(response.data)
+    })
+    .catch(err => setErrorMessage(err))
   }, [])
 
   function sendAttempt() {
-    puzzleAttemptRequest(pk, language, editorContent)
+    puzzleAttemptRequest(pk, auth.token, language, editorContent)
     .then(response => {
       //TODO: update DOM to display a new attempt
       console.log("Sent!")
@@ -138,14 +161,13 @@ export default function EditorPage() {
     <div className="flex flex-col h-screen">
       <header className="bg-background border-b flex items-center justify-between px-4 py-2 shadow-sm">
         <div className="flex items-center gap-4">
-          <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
+          <HomeButton />
         </div>
         <div className="flex items-center gap-4">
+          <CompletionStatus  attempts={attempts}/>
+          <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
           <Button onClick={sendAttempt}>Build</Button>
-          <AttemptsDrawer attempts={[
-            {isPassed: false, total: 5, passedTests: 3},
-            {isPassed: true, total: 5, passedTests: 5}
-          ]}></AttemptsDrawer>
+          <AttemptsDrawer attempts={attempts}></AttemptsDrawer>
         </div>
       </header>
       <div className="flex-1 grid grid-cols-[1fr_2fr]">
