@@ -38,7 +38,7 @@ function StickyPageNavigation({title, children}) {
         return ""
     }
 
-    return <div className="sticky top-10">
+    return <div className="md:sticky top-10">
         <nav className="text-sm text-muted-foreground grid gap-4">
             <div className="max-w-6xl w-full mx-auto text-primary">
                 <h1 className="font-semibold text-3xl">{title}</h1>
