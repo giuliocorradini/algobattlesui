@@ -249,6 +249,11 @@ export default function EditorPage() {
           setResponseStatus({
             waitingResponse: false
           })
+
+          toast({
+            title: "Tests passed",
+            description: "Your solution has passed all the tests."
+          })
         } else if (response.data.passed == false && response.data.results != "") {
           toast({
             title: "Build error",
