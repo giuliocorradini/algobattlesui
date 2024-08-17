@@ -2,8 +2,8 @@
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../../components/ui/dropdown-menu"
 import { Button } from "../../components/ui/button"
 import { Textarea } from "./textarea"
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../../components/ui/drawer"
-import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon } from "lucide-react"
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
+import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
 import { useParams } from "react-router-dom"
@@ -12,6 +12,13 @@ import { useContext } from "react"
 import { HomeButton } from "../../components/homebutton"
 import { FetchUserInfo } from "../../lib/api/user"
 import { AccountButton } from "../home"
+import { Toaster } from "../../components/ui/toaster"
+import { useToast } from "../../components/ui/use-toast"
+import { ToastAction } from "../../components/ui/toast"
+import { Label } from "../../components/ui/label"
+import { Input } from "../../components/ui/input"
+import React from "react"
+
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   return <DropdownMenu>
@@ -113,6 +120,36 @@ function CompletionStatus({attempts}) {
     return <></>
 }
 
+function CompileResultsDrawer({errors}) {
+  function NoErrorsButton(props) {
+    return <Button variant="outline" {...props}>No errors</Button>
+  }
+
+  function DangerErrorsButton(props) {
+    return <Button variant="destructive" {...props}>Build errors</Button>
+  }
+
+  return <Drawer>
+  <DrawerTrigger asChild>
+    {
+      errors == null ? <NoErrorsButton /> :
+      <DangerErrorsButton />
+    }
+  </DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>All good!</DrawerTitle>
+      <DrawerDescription>There are no build errors</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <DrawerClose>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+}
+
 export default function EditorPage() {
   const [language, setLanguage] = useState("C")
   const [errorMessage, setErrorMessage] = useState("")
@@ -128,6 +165,8 @@ export default function EditorPage() {
 
   const {isLogged, token, ...auth} = useContext(AuthenticationContext)
   const {user, setUser} = useContext(CurrentUserContext)
+
+  const [buildErrors, setBuildErrors] = useState(null);
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
@@ -203,8 +242,13 @@ export default function EditorPage() {
             autoCapitalize="off"
             autoComplete="off"
           />
+          <div className="absolute bottom-4 right-4">
+          <CompileResultsDrawer errors={buildErrors}></CompileResultsDrawer>
+          </div>
         </div>
       </div>
+
+      <Toaster />
     </div>
   )
 }
