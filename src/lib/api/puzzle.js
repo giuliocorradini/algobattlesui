@@ -23,3 +23,9 @@ export function getPreviousAttempts(pk, token) {
         headers: {Authorization: `Token ${token}`}
     })
 }
+
+export function pollAttempt(pk, token) {
+    return client.get(`/puzzle/attempt_result/${pk}`, {
+        headers: {Authorization: `Token ${token}`}
+    })
+}

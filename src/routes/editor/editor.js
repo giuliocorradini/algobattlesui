@@ -5,7 +5,7 @@ import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest } from "../../lib/api/puzzle"
+import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest, pollAttempt } from "../../lib/api/puzzle"
 import { useParams } from "react-router-dom"
 import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { useContext } from "react"
@@ -129,6 +129,20 @@ function CompileResultsDrawer({errors}) {
     return <Button variant="destructive" {...props}>Build errors</Button>
   }
 
+  function getTitle() {
+    if (errors)
+      return "Build errors"
+    else
+      return "All good!"
+  }
+
+  function getDescription() {
+    if (errors)
+      return errors
+    else
+      return "There are no build errors"
+  }
+  
   return <Drawer>
   <DrawerTrigger asChild>
     {
@@ -138,12 +152,12 @@ function CompileResultsDrawer({errors}) {
   </DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>All good!</DrawerTitle>
-      <DrawerDescription>There are no build errors</DrawerDescription>
+      <DrawerTitle>{getTitle()}</DrawerTitle>
+      <DrawerDescription className="text-left">{getDescription()}</DrawerDescription>
     </DrawerHeader>
     <DrawerFooter>
       <DrawerClose>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline">Got it</Button>
       </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
@@ -196,17 +210,74 @@ export default function EditorPage() {
     }
   }, [isLogged])
 
+  const [{waitingResponse, attemptId}, setResponseStatus] = useState({
+    waitingResponse: false,
+    attemptId: null
+  })
+  const {toast} = useToast()
   function sendAttempt() {
-    puzzleAttemptRequest(pk, auth.token, language, editorContent)
-    .then(response => {
-      //TODO: update DOM to display a new attempt
-      console.log("Sent!")
+    setResponseStatus({waitingResponse: false})
+
+    puzzleAttemptRequest(pk, token, language, editorContent)
+    .then(response => {      
+      toast({
+        title: "Build message",
+        description: "Your attempt was successfully submitted"
+      })
+
+      setResponseStatus({
+        waitingResponse: true,
+        attemptId: response.data.id
+      })
     })
     .catch(err => {
-      //TODO: may show a popup error message
+      toast({
+        title: "Build error",
+        description: "There was an error submitting your attempt",
+        variant: "destructive"
+      })
       setErrorMessage(err)
+      console.log(err)
     })
   }
+
+  function pollAttemptResponse() {
+    pollAttempt(attemptId, token)
+      .then(response => {
+        if (response.data.passed == true) {
+          setBuildErrors(null)
+          setResponseStatus({
+            waitingResponse: false
+          })
+        } else if (response.data.passed == false && response.data.results != "") {
+          toast({
+            title: "Build error",
+            description: "There was an error building your attempt. Check the error drawer.",
+            variant: "destructive"
+          })
+
+          setBuildErrors(response.data.results)
+          setResponseStatus({
+            waitingResponse: true
+          })
+        }
+
+        setAttempts(attempts.concat(response.data))
+      })
+      .catch(err => {
+        console.log()
+      })
+  }
+
+  useEffect(() => {
+    if(waitingResponse) {
+      let id = setTimeout(pollAttemptResponse, 1000)
+
+      return () => {
+        clearTimeout(id)
+      }
+    }
+  }, [waitingResponse])
 
   return (
     <div className="flex flex-col h-screen">
