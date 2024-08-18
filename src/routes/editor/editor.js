@@ -195,7 +195,7 @@ export default function EditorPage() {
     })
     .catch(err => setErrorMessage(err))
 
-    getPreviousAttempts(pk, auth.token).then(response => {
+    getPreviousAttempts(pk, token).then(response => {
       setAttempts(response.data)
     })
     .catch(err => setErrorMessage(err))
