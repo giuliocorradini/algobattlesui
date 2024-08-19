@@ -1,3 +1,4 @@
+import { CheckIcon, XIcon } from "lucide-react"
 import { Button } from "../../components/ui/button"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
 import React from "react"
@@ -19,12 +20,24 @@ export function CompileResultsDrawer({errors, isCompilerError}) {
       } else
         return "All good!"
     }
+
+    function testPairs(errs) {
+      const obj = JSON.parse(errs)
+      return Object.entries(obj)
+    }
   
     function getDescription() {
       if (errors) {
         if (isCompilerError)
             return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
-        return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
+        return <DrawerDescription className="text-left">{
+          testPairs(errors).map(([n, stat]) => [n, stat == "passed", stat]).map(([n, b, stat]) =>
+            <div className="flex">
+              {b ? <CheckIcon className="stroke-green-600" /> : <XIcon className="stroke-red-600" />}
+              Test {n}: {stat}
+            </div>
+          )
+        }</DrawerDescription>
       } else
         return <DrawerDescription className="text-left">There are no build errors.</DrawerDescription>
     }
