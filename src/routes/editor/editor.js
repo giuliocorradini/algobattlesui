@@ -138,9 +138,9 @@ function CompileResultsDrawer({errors}) {
 
   function getDescription() {
     if (errors)
-      return errors
+      return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
     else
-      return "There are no build errors"
+      return <DrawerDescription className="text-left">There are no build errors.</DrawerDescription>
   }
   
   return <Drawer>
@@ -152,8 +152,8 @@ function CompileResultsDrawer({errors}) {
   </DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>{getTitle()}</DrawerTitle>
-      <DrawerDescription className="text-left">{getDescription()}</DrawerDescription>
+      <DrawerTitle className="text-left">{getTitle()}</DrawerTitle>
+      {getDescription()}
     </DrawerHeader>
     <DrawerFooter>
       <DrawerClose>
@@ -233,7 +233,7 @@ export default function EditorPage() {
     .catch(err => {
       toast({
         title: "Build error",
-        description: "There was an error submitting your attempt",
+        description: "There was an error submitting your attempt. Please retry.",
         variant: "destructive"
       })
       setErrorMessage(err)
