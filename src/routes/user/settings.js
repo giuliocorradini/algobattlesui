@@ -115,9 +115,11 @@ export default function SettingsPage() {
         const password_repeat = formData.new_password_check.value
 
         if (new_password != password_repeat) {
-            console.log(password_repeat)//show an error prompt
+            setErrors({
+                new_password_check: "New password and password check do not match."
+            })
+            return
         }
-
 
         UpdatePassword(auth.token, {
             new_password: new_password,
@@ -126,9 +128,8 @@ export default function SettingsPage() {
             .then(response => {
                 //show success message
             })
-            .catch(err => {
-                //show error
-                //reason is transmitted alonside response
+            .catch(({response: {data}}) => {
+                setErrors(data)
             })
     }
 
@@ -243,15 +244,15 @@ export default function SettingsPage() {
                                 <CardContent className="grid gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="old_password">Old password</Label>
-                                        <NonBlankInput id="old_password" name="old_password" type="password" />
+                                        <NonBlankInput id="old_password" name="old_password" type="password" {...errs("old_password")} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="new_password">New password</Label>
-                                        <NonBlankInput id="new_password" name="new_password" type="password" />
+                                        <NonBlankInput id="new_password" name="new_password" type="password" {...errs("new_password")} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="new_password_check">Repeat new password</Label>
-                                        <NonBlankInput id="new_password_check" name="new_password_check" type="password" />
+                                        <NonBlankInput id="new_password_check" name="new_password_check" type="password" {...errs("new_password_check")} />
                                     </div>
                                 </CardContent>
                                 <CardContent className="grid gap-6">
