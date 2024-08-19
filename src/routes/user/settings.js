@@ -16,8 +16,8 @@ import { FormField } from "../../components/formfield"
 /**
  * An input field that that becomes red to signal an error condition.
  */
-function ErrorInput({content, setContent, ...props}) {
-    return <FormField onChange={e => {setContent(e.target.value)}} value={content} {...props} required></FormField>
+function ErrorInput({content, ...props}) {
+    return <FormField value={content} {...props} required></FormField>
 }
 
 /**
@@ -28,7 +28,7 @@ function NonBlankInput({error, defaultValue, errorLabel, ...props}) {
     const err = error ? errorLabel : "This field is required."
     const requiredError = content == "" && content != defaultValue
 
-    return <ErrorInput error={error || requiredError} content={content} setContent={setContent} errorLabel={err} {...props}></ErrorInput>
+    return <ErrorInput error={error || requiredError} content={content} setContent={setContent} errorLabel={err} {...props} onChange={e => {setContent(e.target.value)}}></ErrorInput>
 }
 
 function Header({user}) {
@@ -151,7 +151,9 @@ export default function SettingsPage() {
                     ...response
                 })
             })
-            .catch(err => { console.log(err) })
+            .catch(({response: {data}}) => {
+                setErrors(data)
+            })
     }
 
     //TODO: make the update button active when default data is changed
@@ -230,7 +232,7 @@ export default function SettingsPage() {
                                     <div className="grid gap-2">
                                         <Label>Select a new picture</Label>
                                         <div className="flex items-center gap-4">
-                                            <Input type="file" accept="image/*" onChange={e => setImage(e.target.files[0])} />
+                                            <ErrorInput type="file" accept="image/*" onChange={e => setImage(e.target.files[0])} {...errs("picture")} />
                                             <Button type="submit">Upload</Button>
                                         </div>
                                     </div>
