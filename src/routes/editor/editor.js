@@ -205,7 +205,7 @@ export default function EditorPage() {
     pollAttempt(attemptId, token)
       .then(response => {
         if (response.data.passed == true) {
-          setLastAttempt(null)
+          setLastAttempt({...lastAttempt, results: null})
           setResponseStatus({
             waitingResponse: false
           })
