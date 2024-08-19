@@ -7,12 +7,24 @@ import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar"
 import { Switch } from "../../components/ui/switch"
 import { Form, Link, useNavigate } from "react-router-dom"
 import { SwordsIcon } from "lucide-react"
-import { AccountButton } from "../home"
+import { AccountButton } from "../../components/accountbutton"
 import { useContext, useEffect, useState } from "react"
-import { AuthenticationContext } from "../../lib/api"
+import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { FetchUserInfo, UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/user"
+import { FormField } from "../../components/formfield"
 
-function Header() {
+/**
+ * An input field that cannot be blank or null, and it becomes red when you erase its content,
+ * or when you want to signal an error condition.
+ */
+function NonBlankInput({defaultValue, ...props}) {
+    const [isError, setError] = useState(false)
+    const [content, setContent] = useState(defaultValue)
+
+    return <FormField isError={isError} onChange={e => {setContent(e.target.value)}} value={content} {...props}></FormField>
+}
+
+function Header({user}) {
     return <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
         <Link to="/" className="flex items-center gap-2 font-bold">
             <SwordsIcon className="h-6 w-6" />
@@ -21,7 +33,7 @@ function Header() {
         <nav className="hidden font-medium sm:flex flex-row items-center gap-5 text-sm lg:gap-6">
         </nav>
         <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
-            <AccountButton></AccountButton>
+            <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
         </div>
     </header>
 }
@@ -51,20 +63,14 @@ function StickyPageNavigation({title, children}) {
 }
 
 export default function SettingsPage() {
-    const [userData, setUserData] = useState({})
     const auth = useContext(AuthenticationContext)
+    const {user, setUser} = useContext(CurrentUserContext)
     const navigate = useNavigate()
-    const initials = userData.username ? userData.username.substring(0, 2) : ""
-
-    if (!auth.isLogged)
-        navigate("/login")
+    const initials = user.username ? user.username.substring(0, 2) : ""
 
     useEffect(() => {
-        FetchUserInfo(auth.token)
-            .then(response => {
-                setUserData(response.data)
-            })
-            .catch(err => { })
+        if (!auth.isLogged)
+            navigate("/login")  //TODO: better, check token and decide to login
     }, [])
 
     function handleSubmit(evt) {
@@ -125,8 +131,8 @@ export default function SettingsPage() {
 
         UploadPicture(auth.token, formData)
             .then(response => {
-                setUserData({
-                    ...userData,
+                setUser({
+                    ...user,
                     ...response
                 })
             })
@@ -138,7 +144,7 @@ export default function SettingsPage() {
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
-            <Header></Header>
+            <Header user={user}></Header>
             <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
                 <div className="grid md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr] items-start gap-6 max-w-6xl w-full mx-auto">
                     <StickyPageNavigation title="Settings">
@@ -161,29 +167,29 @@ export default function SettingsPage() {
                                 <CardContent className="grid gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="username">Username</Label>
-                                        <Input id="username" defaultValue={userData.username} />
+                                        <NonBlankInput id="username" defaultValue={user.username} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">Email</Label>
-                                        <Input id="email" type="email" defaultValue={userData.email} />
+                                        <Input id="email" type="email" defaultValue={user.email} />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                             <Label htmlFor="firstName">First Name</Label>
-                                            <Input id="first_name" defaultValue={userData.first_name} />
+                                            <Input id="first_name" defaultValue={user.first_name} />
                                         </div>
                                         <div className="grid gap-2">
                                             <Label htmlFor="lastName">Last Name</Label>
-                                            <Input id="last_name" defaultValue={userData.last_name} />
+                                            <Input id="last_name" defaultValue={user.last_name} />
                                         </div>
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="address">Github Profile</Label>
-                                        <Input id="github" defaultValue={userData.github} />
+                                        <Input id="github" defaultValue={user.github} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="address">Linkedin</Label>
-                                        <Input id="linkedin" defaultValue={userData.linkedin} />
+                                        <Input id="linkedin" defaultValue={user.linkedin} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Button size="sm">Update</Button>
@@ -201,7 +207,7 @@ export default function SettingsPage() {
                                         <Label>Current</Label>
                                         <div className="flex items-center gap-4">
                                             <Avatar className="h-16 w-16">
-                                                <AvatarImage src={userData.picture} alt="../..shadcn" />
+                                                <AvatarImage src={user.picture} alt="../..shadcn" />
                                                 <AvatarFallback>{initials}</AvatarFallback>
                                             </Avatar>
                                         </div>
