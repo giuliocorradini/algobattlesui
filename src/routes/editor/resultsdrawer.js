@@ -2,7 +2,7 @@ import { Button } from "../../components/ui/button"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
 import React from "react"
 
-export function CompileResultsDrawer({errors, isBuildError}) {
+export function CompileResultsDrawer({errors, isCompilerError}) {
     function NoErrorsButton(props) {
       return <Button variant="outline" {...props}>No errors</Button>
     }
@@ -13,7 +13,7 @@ export function CompileResultsDrawer({errors, isBuildError}) {
   
     function getTitle() {
       if (errors) {
-        if (isBuildError)
+        if (isCompilerError)
             return "Build errors"
         return "Tests not passed"
       } else
@@ -22,7 +22,7 @@ export function CompileResultsDrawer({errors, isBuildError}) {
   
     function getDescription() {
       if (errors) {
-        if (isBuildError)
+        if (isCompilerError)
             return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
         return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
       } else

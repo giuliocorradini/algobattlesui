@@ -136,7 +136,11 @@ export default function EditorPage() {
   const {isLogged, token, ...auth} = useContext(AuthenticationContext)
   const {user, setUser} = useContext(CurrentUserContext)
 
-  const [buildErrors, setBuildErrors] = useState(null);
+  const [lastAttempt, setLastAttempt] = useState({
+    results: null,
+    build_error: false,
+    passed: false
+  });
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
@@ -201,7 +205,7 @@ export default function EditorPage() {
     pollAttempt(attemptId, token)
       .then(response => {
         if (response.data.passed == true) {
-          setBuildErrors(null)
+          setLastAttempt(null)
           setResponseStatus({
             waitingResponse: false
           })
@@ -217,7 +221,7 @@ export default function EditorPage() {
             variant: "destructive"
           })
 
-          setBuildErrors(response.data.results)
+          setLastAttempt(response.data)
           setResponseStatus({
             waitingResponse: true
           })
@@ -275,7 +279,7 @@ export default function EditorPage() {
             autoComplete="off"
           />
           <div className="absolute bottom-4 right-4">
-          <CompileResultsDrawer errors={buildErrors}></CompileResultsDrawer>
+          <CompileResultsDrawer errors={lastAttempt.results} isCompilerError={lastAttempt.build_error}></CompileResultsDrawer>
           </div>
         </div>
       </div>
