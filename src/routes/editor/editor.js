@@ -1,4 +1,3 @@
-'use client'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../../components/ui/dropdown-menu"
 import { Button } from "../../components/ui/button"
 import { Textarea } from "./textarea"
@@ -17,6 +16,7 @@ import { useToast } from "../../components/ui/use-toast"
 import { ToastAction } from "../../components/ui/toast"
 import { Label } from "../../components/ui/label"
 import { Input } from "../../components/ui/input"
+import { CompileResultsDrawer } from "./resultsdrawer"
 import React from "react"
 
 
@@ -118,50 +118,6 @@ function CompletionStatus({attempts}) {
     </div>
   else
     return <></>
-}
-
-function CompileResultsDrawer({errors}) {
-  function NoErrorsButton(props) {
-    return <Button variant="outline" {...props}>No errors</Button>
-  }
-
-  function DangerErrorsButton(props) {
-    return <Button variant="destructive" {...props}>Build errors</Button>
-  }
-
-  function getTitle() {
-    if (errors)
-      return "Build errors"
-    else
-      return "All good!"
-  }
-
-  function getDescription() {
-    if (errors)
-      return <DrawerDescription className="text-left whitespace-pre-line whitespace-pre font-mono overflow-x-scroll">{errors}</DrawerDescription>
-    else
-      return <DrawerDescription className="text-left">There are no build errors.</DrawerDescription>
-  }
-  
-  return <Drawer>
-  <DrawerTrigger asChild>
-    {
-      errors == null ? <NoErrorsButton /> :
-      <DangerErrorsButton />
-    }
-  </DrawerTrigger>
-  <DrawerContent>
-    <DrawerHeader>
-      <DrawerTitle className="text-left">{getTitle()}</DrawerTitle>
-      {getDescription()}
-    </DrawerHeader>
-    <DrawerFooter>
-      <DrawerClose>
-        <Button variant="outline">Got it</Button>
-      </DrawerClose>
-    </DrawerFooter>
-  </DrawerContent>
-</Drawer>
 }
 
 export default function EditorPage() {
