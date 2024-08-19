@@ -11,25 +11,7 @@ import { AccountButton } from "../../components/accountbutton"
 import { useContext, useEffect, useState } from "react"
 import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { FetchUserInfo, UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/user"
-import { FormField } from "../../components/formfield"
-
-/**
- * An input field that that becomes red to signal an error condition.
- */
-function ErrorInput({content, ...props}) {
-    return <FormField value={content} {...props} required></FormField>
-}
-
-/**
- * An error input field that becomes red when its content goes blank.
- */
-function NonBlankInput({error, defaultValue, errorLabel, ...props}) {
-    const [content, setContent] = useState(defaultValue)
-    const err = error ? errorLabel : "This field is required."
-    const requiredError = content == "" && content != defaultValue
-
-    return <ErrorInput error={error || requiredError} content={content} setContent={setContent} errorLabel={err} {...props} onChange={e => {setContent(e.target.value)}}></ErrorInput>
-}
+import { ErrorInput, NonBlankInput } from "../../components/errorfield"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
