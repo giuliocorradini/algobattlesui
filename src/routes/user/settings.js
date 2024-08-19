@@ -17,18 +17,18 @@ import { FormField } from "../../components/formfield"
  * An input field that that becomes red to signal an error condition.
  */
 function ErrorInput({content, setContent, ...props}) {
-    return <FormField onChange={e => {setContent(e.target.value)}} value={content} {...props}></FormField>
+    return <FormField onChange={e => {setContent(e.target.value)}} value={content} {...props} required></FormField>
 }
 
 /**
  * An error input field that becomes red when its content goes blank.
  */
-function NonBlankInput({error, defaultValue, ...props}) {
+function NonBlankInput({error, defaultValue, errorLabel, ...props}) {
     const [content, setContent] = useState(defaultValue)
-    const errorLabel = error ? props.errorLabel : "This field is required."
+    const err = error ? errorLabel : "This field is required."
     const requiredError = content == "" && content != defaultValue
 
-    return <ErrorInput error={error | requiredError} content={content} setContent={setContent} errorLabel={errorLabel} {...props}></ErrorInput>
+    return <ErrorInput error={error || requiredError} content={content} setContent={setContent} errorLabel={err} {...props}></ErrorInput>
 }
 
 function Header({user}) {
@@ -75,12 +75,18 @@ export default function SettingsPage() {
     const navigate = useNavigate()
     const initials = user.username ? user.username.substring(0, 2) : ""
 
-    const [errors, setErrors] = useState({})
-
     useEffect(() => {
         if (!auth.isLogged)
             navigate("/login")  //TODO: better, check token and decide to login
     }, [])
+
+    const [errors, setErrors] = useState({})
+    const hasErrors = (field) => field in errors
+    const errorFor = (field) => errors[field]
+    const errs = (field) => {return {
+        error: hasErrors(field),
+        errorLabel: errorFor(field)
+    }}
 
     function handleSubmit(evt) {
         evt.preventDefault()
@@ -99,8 +105,8 @@ export default function SettingsPage() {
             .then(response => {
                 //show successful update message
             })
-            .catch(err => {
-                //show error message
+            .catch(({response: {data}}) => {
+                setErrors(data)
             })
     }
 
@@ -176,11 +182,11 @@ export default function SettingsPage() {
                                 <CardContent className="grid gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="username">Username</Label>
-                                        <NonBlankInput id="username" defaultValue={user.username} />
+                                        <NonBlankInput id="username" defaultValue={user.username} {...errs("username")} />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">Email</Label>
-                                        <NonBlankInput id="email" type="email" defaultValue={user.email} />
+                                        <NonBlankInput id="email" type="email" defaultValue={user.email} {...errs("email")}/>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
