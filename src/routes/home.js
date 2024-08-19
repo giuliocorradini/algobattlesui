@@ -5,7 +5,7 @@ import { Input } from "../components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "../components/ui/card"
 import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound } from "lucide-react"
-import { AuthenticationContext, CurrentUserContext, logoutRequest, setToken } from "../lib/api"
+import { AuthenticationContext, CurrentUserContext, invalidateLocalStorageToken, logoutRequest, } from "../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
 import { HomeButton } from "../components/homebutton"
@@ -46,7 +46,6 @@ function CategoryElement({ name, link }) {
     <Link
       href={link}
       className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
-      prefetch={false}
     >
       <span>{name}</span>
       <ChevronRightIcon className="h-4 w-4" />
@@ -83,7 +82,7 @@ function PuzzleCollection({ collectionName, content }) {
   return <section>
     <div className="flex items-center justify-between">
       <h2 className="text-lg font-semibold">{collectionName}</h2>
-      <Link href="#" className="text-sm font-medium text-primary hover:underline" prefetch={false}>
+      <Link href="#" className="text-sm font-medium text-primary hover:underline">
         View all
       </Link>
     </div>
@@ -103,6 +102,7 @@ export function AccountButton({username, email, picture}) {
 
   function handleLogout() {
     logoutRequest().then(response => {}).catch(error => {})
+    invalidateLocalStorageToken()
     auth.setAuthentication([false, null])
   }
 

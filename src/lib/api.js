@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { createContext } from "react";
+import { api_token_key } from "../config";
 
 /**
  * This context is used by authentication aware components. Values are defined in index.js
@@ -59,4 +60,23 @@ export function registerRequest(username, password, email) {
     }, {
         headers: ""
     })
+}
+
+export function saveLocalStorageToken(token) {
+    localStorage.setItem(api_token_key, token)
+}
+
+export function invalidateLocalStorageToken() {
+    localStorage.removeItem(api_token_key)
+}
+
+export function checkLocalStorageToken(setAuthentication) {
+    const savedToken = localStorage.getItem(api_token_key)
+
+    if (savedToken)
+        client.post("/auth/token", {}, {
+            headers: { Authorization: `Token ${savedToken}` }
+        })
+            .then(response => setAuthentication([true, savedToken]))
+            .catch(err => invalidateLocalStorageToken())
 }

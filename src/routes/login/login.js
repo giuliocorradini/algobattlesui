@@ -10,7 +10,7 @@ import {
 } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
-import { AuthenticationContext, client, loginRequest, setToken } from "../../lib/api"
+import { AuthenticationContext, saveLocalStorageToken, loginRequest } from "../../lib/api"
 import { useContext, useState } from "react"
 
 function LoginForm() {
@@ -32,6 +32,7 @@ function LoginForm() {
     .then((response) => {
       if (response.status == 200 && 'token' in response.data) {
         auth.setAuthentication([true, response.data.token]);
+        saveLocalStorageToken(response.data.token)
         navigate("/")
       }
       else

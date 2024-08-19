@@ -11,8 +11,9 @@ import {
 import EditorPage from './routes/editor/editor';
 import LoginPage from './routes/login/login';
 import { AuthenticationContext, CurrentUserContext } from './lib/api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SettingsPage from './routes/user/settings';
+import { checkLocalStorageToken } from './lib/api';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
 function RouterProviderWithAuthenticationContext() {
   const [[isLogged, token], setAuthentication] = useState([false, null])
   const [user, setUser] = useState({})
+
+  // Check in local storage for a token
+  useEffect(() => {
+    if (isLogged)
+      return
+
+    checkLocalStorageToken(setAuthentication)
+  }, [])
 
   return <AuthenticationContext.Provider value={{
     isLogged: isLogged,

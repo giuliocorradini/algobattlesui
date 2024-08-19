@@ -1,0 +1,1 @@
+export const api_token_key = "algobattles_token"
