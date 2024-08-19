@@ -14,14 +14,21 @@ import { FetchUserInfo, UpdatePassword, UpdateUserInfo, UploadPicture } from "..
 import { FormField } from "../../components/formfield"
 
 /**
- * An input field that cannot be blank or null, and it becomes red when you erase its content,
- * or when you want to signal an error condition.
+ * An input field that that becomes red to signal an error condition.
  */
-function NonBlankInput({defaultValue, ...props}) {
-    const [isError, setError] = useState(false)
-    const [content, setContent] = useState(defaultValue)
+function ErrorInput({content, setContent, ...props}) {
+    return <FormField onChange={e => {setContent(e.target.value)}} value={content} {...props}></FormField>
+}
 
-    return <FormField isError={isError} onChange={e => {setContent(e.target.value)}} value={content} {...props}></FormField>
+/**
+ * An error input field that becomes red when its content goes blank.
+ */
+function NonBlankInput({error, defaultValue, ...props}) {
+    const [content, setContent] = useState(defaultValue)
+    const errorLabel = error ? props.errorLabel : "This field is required."
+    const requiredError = content == "" && content != defaultValue
+
+    return <ErrorInput error={error | requiredError} content={content} setContent={setContent} errorLabel={errorLabel} {...props}></ErrorInput>
 }
 
 function Header({user}) {
@@ -67,6 +74,8 @@ export default function SettingsPage() {
     const {user, setUser} = useContext(CurrentUserContext)
     const navigate = useNavigate()
     const initials = user.username ? user.username.substring(0, 2) : ""
+
+    const [errors, setErrors] = useState({})
 
     useEffect(() => {
         if (!auth.isLogged)
@@ -171,7 +180,7 @@ export default function SettingsPage() {
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">Email</Label>
-                                        <Input id="email" type="email" defaultValue={user.email} />
+                                        <NonBlankInput id="email" type="email" defaultValue={user.email} />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
@@ -207,7 +216,7 @@ export default function SettingsPage() {
                                         <Label>Current</Label>
                                         <div className="flex items-center gap-4">
                                             <Avatar className="h-16 w-16">
-                                                <AvatarImage src={user.picture} alt="../..shadcn" />
+                                                <AvatarImage src={user.picture} />
                                                 <AvatarFallback>{initials}</AvatarFallback>
                                             </Avatar>
                                         </div>
@@ -230,15 +239,15 @@ export default function SettingsPage() {
                                 <CardContent className="grid gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="old_password">Old password</Label>
-                                        <Input id="old_password" name="old_password" type="password" />
+                                        <NonBlankInput id="old_password" name="old_password" type="password" />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="new_password">New password</Label>
-                                        <Input id="new_password" name="new_password" type="password" />
+                                        <NonBlankInput id="new_password" name="new_password" type="password" />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="new_password_check">Repeat new password</Label>
-                                        <Input id="new_password_check" name="new_password_check" type="password" />
+                                        <NonBlankInput id="new_password_check" name="new_password_check" type="password" />
                                     </div>
                                 </CardContent>
                                 <CardContent className="grid gap-6">
