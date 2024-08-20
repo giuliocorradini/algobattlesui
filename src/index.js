@@ -14,6 +14,8 @@ import { AuthenticationContext, CurrentUserContext } from './lib/api';
 import { useState, useEffect } from 'react';
 import SettingsPage from './routes/user/settings';
 import { checkLocalStorageToken } from './lib/api';
+import '@radix-ui/themes/styles.css';
+import { Theme } from '@radix-ui/themes';
 
 const router = createBrowserRouter([
   {
@@ -63,7 +65,9 @@ function RouterProviderWithAuthenticationContext() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProviderWithAuthenticationContext />
+    <Theme>
+      <RouterProviderWithAuthenticationContext />
+    </Theme>
   </React.StrictMode>
 );
 
