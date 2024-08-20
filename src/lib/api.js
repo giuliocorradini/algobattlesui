@@ -52,13 +52,15 @@ export function logoutRequest() {
     })
 }
 
-export function registerRequest(username, password, email) {
+export function registerRequest(username, password, email, first_name, last_name) {
     return client.post("/auth/register/", {
         username: username,
         password: password,
-        email: email
+        email: email,
+        first_name: first_name,
+        last_name: last_name
     }, {
-        headers: ""
+        headers: {}
     })
 }
 

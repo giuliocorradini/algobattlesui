@@ -14,7 +14,8 @@ import { AuthenticationContext, saveLocalStorageToken, loginRequest } from "../.
 import { useContext, useEffect, useState } from "react"
 import { TriangleAlertIcon } from "lucide-react"
 import { Callout } from "@radix-ui/themes"
-import { Loader2 } from "lucide-react"
+import ButtonLoading from "../../components/buttonloading"
+import { Toaster } from "../../components/ui/toaster"
 
 function InvalidCredentialsCallout() {
   return <Callout.Root color="red" role="alert">
@@ -25,15 +26,6 @@ function InvalidCredentialsCallout() {
       Cannot log in with provided credentials.
     </Callout.Text>
   </Callout.Root>
-}
-
-function ButtonLoading(props) {
-  return (
-    <Button {...props} disabled>
-      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      Please wait
-    </Button>
-  )
 }
 
 function LoginForm() {
@@ -106,5 +98,6 @@ export default function LoginPage() {
       <LoginForm />
       <p className="text-center mt-2 text-sm text-slate-500">Don't have an account? <Link className="text-slate-800" to="/register">Sign up</Link></p>
     </div>
+    <Toaster />
   </div>
 }

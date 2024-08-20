@@ -6,7 +6,7 @@ import { FormField } from "./formfield"
  * An input field that that becomes red to signal an error condition.
  */
 export function ErrorInput({content, ...props}) {
-    return <FormField value={content} {...props} required></FormField>
+    return <FormField value={content} required {...props}></FormField>
 }
 
 /**

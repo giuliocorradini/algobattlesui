@@ -4,7 +4,7 @@ import { Sheet, SheetTrigger, SheetContent } from "../components/ui/sheet"
 import { Input } from "../components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "../components/ui/card"
-import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound } from "lucide-react"
+import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound, UserRoundPen } from "lucide-react"
 import { AuthenticationContext, CurrentUserContext, invalidateLocalStorageToken, logoutRequest, } from "../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
@@ -30,17 +30,24 @@ function AnonymousActions() {
 
   return <>
     <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => navigate("/login")}>
-      <CircleUserIcon className="h-4 w-4" />
+      <UserRound className="h-4 w-4" />
       <span>Login</span>
+    </Button>
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => navigate("/register")}>
+      <UserRoundPen className="h-4 w-4" />
+      <span>Register</span>
     </Button>
   </>
 }
 
 function Actions({ isLogged }) {
   if (isLogged)
-    return <LoggedInActions></LoggedInActions>
+    return [
+    <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>,
+    <LoggedInActions></LoggedInActions>
+  ]
   else
-    return <AnonymousActions></AnonymousActions>
+    return <></>
 }
 
 function CategoryElement({ name, link }) {
@@ -128,7 +135,6 @@ export default function HomePage() {
 
           <HighlightedCategories categories={highlight_categories}></HighlightedCategories>
 
-          <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>
           <Actions isLogged={isLogged}></Actions>
         </nav>
       </aside>

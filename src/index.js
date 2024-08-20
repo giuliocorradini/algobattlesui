@@ -16,6 +16,7 @@ import SettingsPage from './routes/user/settings';
 import { checkLocalStorageToken } from './lib/api';
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
+import RegisterPage from './routes/register/register';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />
   },
   {
     path: "/settings",

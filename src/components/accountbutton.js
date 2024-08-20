@@ -35,6 +35,7 @@ export function AccountButton({username, email, picture}) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => navigate("/login")}>Login</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/register")}>Register</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
   
