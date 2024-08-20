@@ -9,9 +9,11 @@ import { Form, Link, useNavigate } from "react-router-dom"
 import { SwordsIcon } from "lucide-react"
 import { AccountButton } from "../../components/accountbutton"
 import { useContext, useEffect, useState } from "react"
-import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
-import { FetchUserInfo, UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/user"
+import { AuthenticationContext, CurrentUserContext, invalidateLocalStorageToken } from "../../lib/api"
+import { UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/user"
 import { ErrorInput, NonBlankInput } from "../../components/errorfield"
+import { useToast } from "../../components/ui/use-toast"
+import { Toaster } from "../../components/ui/toaster"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -53,6 +55,8 @@ export default function SettingsPage() {
     const navigate = useNavigate()
     const initials = user.username ? user.username.substring(0, 2) : ""
 
+    const {toast} = useToast()
+
     useEffect(() => {
         if (!auth.isLogged)
             navigate("/login")  //TODO: better, check token and decide to login
@@ -81,7 +85,12 @@ export default function SettingsPage() {
 
         UpdateUserInfo(auth.token, requestData)
             .then(response => {
-                //show successful update message
+                toast({
+                    title: "Successful update",
+                    description: "Your user information was updated successfully."
+                })
+
+                setUser(response.data)
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -108,7 +117,15 @@ export default function SettingsPage() {
             old_password: old_password
         })
             .then(response => {
-                //show success message
+                invalidateLocalStorageToken()
+                auth.setAuthentication([false, null])
+                setUser({})
+                
+                navigate("/")
+                toast({
+                    title: "Password",
+                    description: "Your password has been successfully changed. Your session has been invalidated and you have been disconnected. Please log back in."
+                })  // Pops up in homepage toaster
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -125,9 +142,14 @@ export default function SettingsPage() {
 
         UploadPicture(auth.token, formData)
             .then(response => {
+                toast({
+                    title: "Successful update",
+                    description: "Your user picture was updated successfully."
+                })
+
                 setUser({
                     ...user,
-                    ...response
+                    ...response.data
                 })
             })
             .catch(({response: {data}}) => {
@@ -245,6 +267,8 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </main>
+
+            <Toaster></Toaster>
         </div>
     )
 }

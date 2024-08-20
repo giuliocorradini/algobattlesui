@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
 import { HomeButton } from "../components/homebutton"
 import { AccountButton } from "../components/accountbutton"
+import { Toaster } from "../components/ui/toaster"
 
 function LoggedInActions() {
   return <>
@@ -184,6 +185,7 @@ export default function HomePage() {
           ></PuzzleCollection>
 
         </main>
+        <Toaster></Toaster>
       </div>
     </div>
   )
