@@ -4,7 +4,7 @@ import { Sheet, SheetTrigger, SheetContent } from "../components/ui/sheet"
 import { Input } from "../components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../components/ui/dropdown-menu"
 import { Card, CardContent, CardFooter } from "../components/ui/card"
-import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound, UserRoundPen } from "lucide-react"
+import { SwordsIcon, ChevronRightIcon, BookmarkIcon, PuzzleIcon, MenuIcon, CircleUserIcon, UserIcon, UserRound, UserRoundPen, NetworkIcon } from "lucide-react"
 import { AuthenticationContext, CurrentUserContext, invalidateLocalStorageToken, logoutRequest, } from "../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../lib/api/user"
@@ -14,6 +14,8 @@ import { Toaster } from "../components/ui/toaster"
 import { FetchFeaturedProblems } from "../lib/api/home"
 
 function LoggedInActions() {
+  const navigate = useNavigate()
+
   return <>
     <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left">
       <BookmarkIcon className="h-4 w-4" />
@@ -22,6 +24,10 @@ function LoggedInActions() {
     <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left">
       <PuzzleIcon className="h-4 w-4" />
       <span>Discover</span>
+    </Button>
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => {navigate("/multiplayer")}} >
+      <NetworkIcon className="h-4 w-4" />
+      <span>Multiplayer</span>
     </Button>
   </>
 }

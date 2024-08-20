@@ -17,6 +17,7 @@ import { checkLocalStorageToken } from './lib/api';
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import RegisterPage from './routes/register/register';
+import MultiplayerPage from './routes/multiplayer/multiplayer';
 
 const router = createBrowserRouter([
   {
@@ -38,8 +39,12 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: <SettingsPage />
+  },
+  {
+    path: "/multiplayer",
+    element: <MultiplayerPage />
   }
-]);
+  ]);
 
 function RouterProviderWithAuthenticationContext() {
   const [[isLogged, token], setAuthentication] = useState([false, null])
