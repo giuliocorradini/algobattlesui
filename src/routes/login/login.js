@@ -1,4 +1,4 @@
-import { redirect, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../../components/ui/button"
 import {
   Card,
@@ -11,7 +11,7 @@ import {
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { AuthenticationContext, saveLocalStorageToken, loginRequest } from "../../lib/api"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { TriangleAlertIcon } from "lucide-react"
 import { Callout } from "@radix-ui/themes"
 import { Loader2 } from "lucide-react"
@@ -42,8 +42,10 @@ function LoginForm() {
   const navigate = useNavigate();
   const auth = useContext(AuthenticationContext)
 
-  if (auth.isLogged)
-    navigate("/")
+  useEffect(() => {
+    if (auth.isLogged)
+      navigate("/")
+  })
 
   function performLogin(evt) {
     evt.preventDefault()
@@ -91,7 +93,7 @@ function LoginForm() {
         <CardFooter>{
           isLoading ?
             <ButtonLoading className="w-full" /> :
-            <Button loading={isLoading} className="w-full">Sign in</Button>
+            <Button className="w-full">Sign in</Button>
         }</CardFooter>
       </Card>
     </form>
@@ -100,6 +102,9 @@ function LoginForm() {
 
 export default function LoginPage() {
   return <div className="flex items-center justify-center min-h-screen bg-gray-100">
-    <LoginForm />
+    <div>
+      <LoginForm />
+      <p className="text-center mt-2 text-sm text-slate-500">Don't have an account? <Link className="text-slate-800" to="/register">Sign up</Link></p>
+    </div>
   </div>
 }
