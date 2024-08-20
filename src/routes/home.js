@@ -11,6 +11,7 @@ import { FetchUserInfo } from "../lib/api/user"
 import { HomeButton } from "../components/homebutton"
 import { AccountButton } from "../components/accountbutton"
 import { Toaster } from "../components/ui/toaster"
+import { FetchFeaturedProblems } from "../lib/api/home"
 
 function LoggedInActions() {
   return <>
@@ -68,7 +69,7 @@ function HighlightedCategories({categories}) {
   })
 }
 
-function PuzzleCollectionCard({ title, difficulty, categories, pk }) {
+function PuzzleCollectionCard({ title, difficulty, categories, id: pk }) {
   return <Card className="w-[200px] shrink-0">
     <CardContent className="flex aspect-[3/4] items-center justify-center rounded-md bg-background p-4">
       <img
@@ -116,12 +117,20 @@ export default function HomePage() {
   const { isLogged, token, ...auth } = useContext(AuthenticationContext)
   const { user, setUser } = useContext(CurrentUserContext)
 
+  const [featuredProblems, setFeaturedProblems] = useState([])
+
   useEffect(() => {
     if(isLogged)
       FetchUserInfo(token).then((response) => {
         if (response.status === 200)
           setUser(response.data)
       }).catch(err => {})
+
+    FetchFeaturedProblems()
+    .then(({data}) => {
+      setFeaturedProblems(data)
+    })
+    .catch(err => {})
   }, [isLogged])
 
   return (
@@ -179,16 +188,20 @@ export default function HomePage() {
 
         <main className="grid gap-4 p-4 md:p-6">
 
-          <PuzzleCollection collectionName="Interview for FAANG" content={[
-            { title: "Infinite stairs", difficulty: "Easy", pk: 20, categories: ["Tree", "Recursive"] }
-          ]}></PuzzleCollection>
-
           <PuzzleCollection
-          collectionName="Testing"
+          collectionName="Debug"
           content={[
-            {title: "Puzzle 2", difficulty: "Medium", pk: 2, categories: ["greedy"]}
+            {title: "Puzzle 2", difficulty: "Medium", id: 2, categories: ["greedy"]}
           ]}
           ></PuzzleCollection>
+
+          {
+            featuredProblems.map((c, i) => <PuzzleCollection
+              collectionName={c.name} key={i}
+              content={c.puzzles}
+            >
+            </PuzzleCollection>)
+          }
 
         </main>
         <Toaster></Toaster>
