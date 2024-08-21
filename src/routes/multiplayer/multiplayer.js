@@ -1,7 +1,10 @@
+import { useContext } from "react";
 import useWebSocket from "react-use-websocket";
+import { AuthenticationContext } from "../../lib/api";
 
 export default function MultiplayerPage() {
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket("ws://localhost:8000/ws/multiplayer");
+    const { isLogged, token } = useContext(AuthenticationContext)
+    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`ws://localhost:8000/ws/multiplayer?token=${token}`);
 
     return <div>
         Multiplayer
