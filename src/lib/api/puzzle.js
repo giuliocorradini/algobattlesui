@@ -29,3 +29,21 @@ export function pollAttempt(pk, token) {
         headers: {Authorization: `Token ${token}`}
     })
 }
+
+
+//  Multiplayer version
+
+export function puzzleAttemptRequestMultiplayer(pk, token, language, source, challengeId) {
+    return client.post(`/puzzle/${pk}/multiplayer/attempt?chal=${challengeId}`, {
+        language: language,
+        source: Base64.encode(source)
+    }, {
+        headers:  {Authorization: `Token ${token}`}
+    })
+}
+
+export function getPreviousAttemptsMultiplayer(pk, token, challengeId) {
+    return client.get(`/puzzle/${pk}/multiplayer/attempt?chal=${challengeId}`, {
+        headers: {Authorization: `Token ${token}`}
+    })
+}

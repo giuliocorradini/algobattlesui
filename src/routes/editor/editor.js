@@ -4,7 +4,7 @@ import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
 import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest, pollAttempt } from "../../lib/api/puzzle"
+import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest, pollAttempt, puzzleAttemptRequestMultiplayer, getPreviousAttemptsMultiplayer } from "../../lib/api/puzzle"
 import { useParams } from "react-router-dom"
 import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { useContext } from "react"
@@ -18,6 +18,7 @@ import { Label } from "../../components/ui/label"
 import { Input } from "../../components/ui/input"
 import { CompileResultsDrawer } from "./resultsdrawer"
 import React from "react"
+import { useChallenge } from "../multiplayer/challengecontext"
 
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
@@ -136,6 +137,8 @@ export default function EditorPage({multiplayer}) {
   const {isLogged, token, ...auth} = useContext(AuthenticationContext)
   const {user, setUser} = useContext(CurrentUserContext)
 
+  const { challenge, opponent } = useChallenge()
+
   const [lastAttempt, setLastAttempt] = useState({
     results: null,
     build_error: false,
@@ -155,7 +158,8 @@ export default function EditorPage({multiplayer}) {
     })
     .catch(err => setErrorMessage(err))
 
-    getPreviousAttempts(pk, token).then(response => {
+    let attemptsRequest = multiplayer ? getPreviousAttemptsMultiplayer(pk, token, challenge) : getPreviousAttempts(pk, token)
+    attemptsRequest.then(response => {
       setAttempts(response.data)
     })
     .catch(err => setErrorMessage(err))
@@ -177,8 +181,12 @@ export default function EditorPage({multiplayer}) {
   const {toast} = useToast()
   function sendAttempt() {
     setResponseStatus({waitingResponse: false})
+    
+    let request = multiplayer ?
+      puzzleAttemptRequestMultiplayer(pk, token, language, editorContent, challenge) :
+      puzzleAttemptRequest(pk, token, language, editorContent)
 
-    puzzleAttemptRequest(pk, token, language, editorContent)
+    request
     .then(response => {      
       toast({
         title: "Build message",

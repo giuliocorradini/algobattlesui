@@ -6,6 +6,7 @@ import { useToast } from "../../components/ui/use-toast";
 import { Button } from "@radix-ui/themes";
 import { useMultiplayerWebsocket } from "./websocket";
 import { useNavigate } from "react-router-dom";
+import { useChallenge } from "./challengecontext";
 
 function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
     return <div>
@@ -29,7 +30,7 @@ export default function MultiplayerPage() {
     const { sendJsonMessage, lastJsonMessage, readyState, connectWs, authenticate } = useMultiplayerWebsocket()
     const [members, setMembers] = useState([])
     const { toast } = useToast()
-    const [ challenge, setChallenge ] = useState({})    //sets the current challenge when a user accepts
+    const { challenge, setChallenge, setOpponent } = useChallenge()
     const [ enteredLobby, setEnteredLobby ] = useState(false)
     const [ role, setRole ] = useState("opponent")
     const nav = useNavigate()
@@ -54,7 +55,7 @@ export default function MultiplayerPage() {
         })
     }
 
-    function acceptChallenge(id) {
+    function acceptChallenge(id, from) {
         sendJsonMessage({
             "accept": {
                 "challenge": {
@@ -64,6 +65,7 @@ export default function MultiplayerPage() {
         })
 
         setChallenge(id)
+        setOpponent(from)
     }
 
     function decodeLastJsonEffect() {
@@ -79,7 +81,7 @@ export default function MultiplayerPage() {
             toast({
                 title: "Challenge",
                 description: `User ${challenge.from} has sent you a challenge`,
-                action: <Button onClick={() => {acceptChallenge(challenge.id)}}>Accept</Button>
+                action: <Button onClick={() => {acceptChallenge(challenge.id, challenge.from)}}>Accept</Button>
             })
         }
 
