@@ -10,6 +10,15 @@ function Member({id, username, first_name, last_name, deactivate, sendRequest}) 
         {username}, with ID {id}. {first_name} {last_name}
         {deactivate ? <></> : <button onClick={() => {sendRequest(id)}}>Send request</button>}
     </div>
+
+}
+
+function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem}) {
+    if (role == "starter")
+        return [<p>Seleziona puzzle</p>,
+            <input type="number" value={selectedProblem} onChange={setSelectedProblem}></input>,
+            <button onClick={() => {sendProblem()}}>Set problem</button>]
+    return <></>
 }
 
 export default function MultiplayerPage() {
@@ -20,6 +29,7 @@ export default function MultiplayerPage() {
     const { toast } = useToast()
     const [ challenge, setChallenge ] = useState({})    //sets the current challenge when a user accepts
     const [ enteredLobby, setEnteredLobby ] = useState(false)
+    const [ role, setRole ] = useState("opponent")
 
     function sendChallengeRequest(rival_id) {
         sendJsonMessage({
@@ -37,6 +47,8 @@ export default function MultiplayerPage() {
                 }
             }
         })
+
+        setChallenge(id)
     }
 
     function decodeLastJsonEffect() {
@@ -61,6 +73,9 @@ export default function MultiplayerPage() {
                 title: "Challenge accepted",
                 description: "User has accepted your challenge"
             })
+
+            setChallenge(lastJsonMessage.accept.challenge.id)
+            setRole("starter")
         }
 
         if ("decline" in lastJsonMessage) {
@@ -68,6 +83,10 @@ export default function MultiplayerPage() {
                 title: "Challenge declined",
                 description: "User has declined your challenge"
             })
+        }
+
+        if ("puzzle" in lastJsonMessage) {
+            setSelectedProblem(lastJsonMessage.puzzle.id)
         }
     }
 
@@ -78,6 +97,17 @@ export default function MultiplayerPage() {
             setEnteredLobby(false)
         }
     }, [readyState])
+
+    const [selectedProblem, setSelectedProblem] = useState(0)
+    function sendProblem() {
+        sendJsonMessage({
+            "puzzle": {
+                "set": {
+                    "id": selectedProblem
+                }
+            }
+        })
+    }
 
     return <div>
         Multiplayer
@@ -93,6 +123,8 @@ export default function MultiplayerPage() {
             members.map((m, i) => <Member key={i} {...m} sendRequest={sendChallengeRequest} deactivate={user.username==m.username} />)
         }
 
+        <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
+        <p>Selected puzzle: {selectedProblem}</p>
         <Toaster />
     </div>
 }
