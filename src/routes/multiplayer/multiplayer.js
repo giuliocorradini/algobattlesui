@@ -4,6 +4,8 @@ import { AuthenticationContext, CurrentUserContext } from "../../lib/api";
 import { Toaster } from "../../components/ui/toaster";
 import { useToast } from "../../components/ui/use-toast";
 import { Button } from "@radix-ui/themes";
+import { useMultiplayerWebsocket } from "./websocket";
+import { useNavigate } from "react-router-dom";
 
 function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
     return <div>
@@ -24,12 +26,21 @@ function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem
 export default function MultiplayerPage() {
     const { isLogged, token } = useContext(AuthenticationContext)
     const { user } = useContext(CurrentUserContext)
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`ws://localhost:8000/ws/multiplayer?token=${token}`);
+    const { sendJsonMessage, lastJsonMessage, readyState, connectWs, authenticate } = useMultiplayerWebsocket()
     const [members, setMembers] = useState([])
     const { toast } = useToast()
     const [ challenge, setChallenge ] = useState({})    //sets the current challenge when a user accepts
     const [ enteredLobby, setEnteredLobby ] = useState(false)
-    const [ role, setRole ] = useState("opponent")
+    const [ role, setRole ] = useState("opponent")
+    const navigate = useNavigate()
+
+    // Setup
+    useEffect(() => {
+        if (isLogged)
+            connectWs()
+        else
+            navigate("/login")
+    }, [])
 
     function sendChallengeRequest(rival_id) {
         sendJsonMessage({
@@ -93,6 +104,7 @@ export default function MultiplayerPage() {
     useEffect(decodeLastJsonEffect, [lastJsonMessage])
     useEffect(() => {
         if (readyState == ReadyState.OPEN && !enteredLobby) {
+            authenticate(token)
             sendJsonMessage({"enter": "lobby"})
             setEnteredLobby(false)
         }

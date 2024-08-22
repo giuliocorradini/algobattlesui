@@ -18,6 +18,7 @@ import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import RegisterPage from './routes/register/register';
 import MultiplayerPage from './routes/multiplayer/multiplayer';
+import { MultiplayerWebsocketProvider } from './routes/multiplayer/websocket';
 
 const router = createBrowserRouter([
   {
@@ -67,7 +68,9 @@ function RouterProviderWithAuthenticationContext() {
       user: user,
       setUser: setUser
     }}>
-      <RouterProvider router={router} />
+      <MultiplayerWebsocketProvider>
+        <RouterProvider router={router} />
+      </MultiplayerWebsocketProvider>
     </CurrentUserContext.Provider>
   </AuthenticationContext.Provider>
 }
