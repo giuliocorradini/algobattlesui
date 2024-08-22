@@ -120,7 +120,7 @@ function CompletionStatus({attempts}) {
     return <></>
 }
 
-export default function EditorPage() {
+export default function EditorPage({multiplayer}) {
   const [language, setLanguage] = useState("C")
   const [errorMessage, setErrorMessage] = useState("")
   const [problemDescription, setProblemDescription] = useState({})

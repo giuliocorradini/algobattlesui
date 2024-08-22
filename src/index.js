@@ -44,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/multiplayer",
     element: <MultiplayerPage />
+  },
+  {
+    path: "/multiplayer/editor/:pk",
+    element: <EditorPage multiplayer />
   }
   ]);
 

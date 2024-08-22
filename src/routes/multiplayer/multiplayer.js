@@ -32,7 +32,11 @@ export default function MultiplayerPage() {
     const [ challenge, setChallenge ] = useState({})    //sets the current challenge when a user accepts
     const [ enteredLobby, setEnteredLobby ] = useState(false)
     const [ role, setRole ] = useState("opponent")
-    const navigate = useNavigate()
+    const nav = useNavigate()
+    const navigate = (to) => {
+        //lobby logout
+        nav(to)
+    }
 
     // Setup
     useEffect(() => {
@@ -98,6 +102,7 @@ export default function MultiplayerPage() {
 
         if ("puzzle" in lastJsonMessage) {
             setSelectedProblem(lastJsonMessage.puzzle.id)
+            navigate(`/multiplayer/editor/${lastJsonMessage.puzzle.id}`)
         }
     }
 
@@ -119,6 +124,8 @@ export default function MultiplayerPage() {
                 }
             }
         })
+
+        navigate(`/multiplayer/editor/${selectedProblem}`)
     }
 
     return <div>
