@@ -19,6 +19,8 @@ import { Input } from "../../components/ui/input"
 import { CompileResultsDrawer } from "./resultsdrawer"
 import React from "react"
 import { useChallenge } from "../multiplayer/challengecontext"
+import { useMultiplayerWebsocket } from "../multiplayer/websocket"
+import { Dialog } from "@radix-ui/react-dialog"
 
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
@@ -119,6 +121,20 @@ function CompletionStatus({attempts}) {
     </div>
   else
     return <></>
+}
+
+function ChallengeEndDialog({open, winner}) {
+  return <Dialog.Root open={open} onOpenChange={()=>{}}>
+    <Dialog.Trigger />
+    <Dialog.Portal>
+      <Dialog.Overlay />
+      <Dialog.Content>
+        <Dialog.Title>The challenge ends here</Dialog.Title>
+        <Dialog.Description>{winner?"You win":"You lose"}</Dialog.Description>
+        <Dialog.Close />
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>
 }
 
 export default function EditorPage({multiplayer}) {
@@ -252,7 +268,18 @@ export default function EditorPage({multiplayer}) {
     }
   }, [waitingResponse])
 
-  const challengeStatus = "ongoing"
+  const [{challengeOngoing, amITheWinner}, setChallengeStatus] = useState({challengeOngoing: true, amITheWinner: false})
+
+  const {lastJsonMessage, sendJsonMessage} = useMultiplayerWebsocket()
+  useEffect(() => {
+    if ("stop" in lastJsonMessage) {
+      const {stop: {result}} = lastJsonMessage
+      setChallengeStatus({
+        challengeOngoing: false,
+        amITheWinner: (result == "winner")
+      })
+    }
+  }, [lastJsonMessage])
 
   return (
     <div className="flex flex-col h-screen">
@@ -261,7 +288,7 @@ export default function EditorPage({multiplayer}) {
           <HomeButton />
         </div>
         {multiplayer ? <div>
-          Challenge with {opponent.username}. Status: {challengeStatus}
+          Challenge with {opponent.username}. {challengeOngoing ? "Ongoing." : (amITheWinner ? "You won." : "You lose.")}
         </div> : <></>}
         <div className="flex items-center gap-4">
           <CompletionStatus  attempts={attempts}/>
@@ -298,6 +325,7 @@ export default function EditorPage({multiplayer}) {
       </div>
 
       <Toaster />
+
     </div>
   )
 }

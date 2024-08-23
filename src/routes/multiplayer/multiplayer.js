@@ -80,7 +80,7 @@ export default function MultiplayerPage() {
             const {challenge} = lastJsonMessage
             toast({
                 title: "Challenge",
-                description: `User ${challenge.from} has sent you a challenge`,
+                description: `User ${challenge.from.username} has sent you a challenge`,
                 action: <Button onClick={() => {acceptChallenge(challenge.id, challenge.from)}}>Accept</Button>
             })
         }
