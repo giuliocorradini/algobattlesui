@@ -91,7 +91,10 @@ export default function MultiplayerPage() {
                 description: "User has accepted your challenge"
             })
 
-            setChallenge(lastJsonMessage.accept.challenge.id)
+            const {accept: {challenge, opponent}} = lastJsonMessage
+
+            setChallenge(challenge.id)
+            setOpponent(opponent)
             setRole("starter")
         }
 

@@ -6,8 +6,10 @@ import React, { createContext, useContext, useState } from 'react'
 const ChallengeContext = createContext(null)
 
 export const ChallengeContextProvider = ({ children }) => {
-  const [challenge, setChallenge] = useState(0)
-  const [opponent, setOpponent] = useState(0)
+  const [challenge, setChallenge] = useState(0) //challenge ID
+  const [opponent, setOpponent] = useState({
+    id: 0, username: ""
+  })   //opponent info
 
   return (
     <ChallengeContext.Provider

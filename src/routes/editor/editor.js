@@ -252,12 +252,17 @@ export default function EditorPage({multiplayer}) {
     }
   }, [waitingResponse])
 
+  const challengeStatus = "ongoing"
+
   return (
     <div className="flex flex-col h-screen">
       <header className="bg-background border-b flex items-center justify-between px-4 py-2 shadow-sm">
         <div className="flex items-center gap-4">
           <HomeButton />
         </div>
+        {multiplayer ? <div>
+          Challenge with {opponent.username}. Status: {challengeStatus}
+        </div> : <></>}
         <div className="flex items-center gap-4">
           <CompletionStatus  attempts={attempts}/>
           <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
