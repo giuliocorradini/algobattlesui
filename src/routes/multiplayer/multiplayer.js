@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useChallenge } from "./challengecontext";
 import { HomeButton } from "../../components/homebutton";
 import { AccountButton } from "../../components/accountbutton";
+import { UserCard } from "./user";
 
 function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
     return <div>
@@ -152,10 +153,16 @@ export default function MultiplayerPage() {
             message: "west end girls"
         })}}>Send message</button>
 
-        <p>Lista utenti</p>
-        {
-            members.map((m, i) => <Member key={i} {...m} sendRequest={sendChallengeRequest} deactivate={user.username==m.username} />)
-        }
+        <div className="container mx-auto px-4 py-8">
+            <p>Active users</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+                {
+                    members.filter(m => m.username != user.username).map((m, i) => <UserCard key={i} user={{ ...m }} sendRequest={() => sendChallengeRequest(m.id)} />)
+                }
+
+            </div>
+        </div>
 
         <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
         <p>Selected puzzle: {selectedProblem}</p>
