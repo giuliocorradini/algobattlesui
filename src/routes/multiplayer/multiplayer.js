@@ -183,6 +183,10 @@ export default function MultiplayerPage() {
         }
     }, [readyState])
 
+    useEffect(() => {
+        setChallenge(0)
+    }, [])
+
     const [selectedProblem, setSelectedProblem] = useState(0)
     function sendProblem() {
         sendJsonMessage({
