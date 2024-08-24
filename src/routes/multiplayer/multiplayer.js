@@ -7,6 +7,8 @@ import { Button } from "@radix-ui/themes";
 import { useMultiplayerWebsocket } from "./websocket";
 import { useNavigate } from "react-router-dom";
 import { useChallenge } from "./challengecontext";
+import { HomeButton } from "../../components/homebutton";
+import { AccountButton } from "../../components/accountbutton";
 
 function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
     return <div>
@@ -133,8 +135,16 @@ export default function MultiplayerPage() {
         navigate(`/multiplayer/editor/${selectedProblem}`)
     }
 
-    return <div>
-        Multiplayer
+    return <div className="flex flex-col h-screen">
+        <header className="bg-background border-b flex items-center justify-between px-4 py-2 shadow-sm">
+            <div className="flex items-center gap-4">
+                <HomeButton />
+                Multiplayer lobby
+            </div>
+            <div className="flex items-center gap-4">
+                <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
+            </div>
+        </header>
 
         <p>Last message: {lastJsonMessage ? lastJsonMessage.message : ""}</p>
 
