@@ -29,3 +29,12 @@ export function UploadPicture(token, formData) {
         }
     })
 }
+
+/**
+ * Fetch public user information
+ */
+export function FetchUserPublicInfo(token, userId) {
+    return client.get(`/user/${userId}`, {
+        headers: {Authorization: `Token ${token}`}
+    })
+}

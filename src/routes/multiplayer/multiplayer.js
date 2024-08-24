@@ -10,6 +10,8 @@ import { useChallenge } from "./challengecontext";
 import { HomeButton } from "../../components/homebutton";
 import { AccountButton } from "../../components/accountbutton";
 import { UserCard } from "./user";
+import UserInfoDialog from "./userinfodialog";
+import { FetchUserPublicInfo } from "../../lib/api/user";
 
 function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
     return <div>
@@ -63,6 +65,29 @@ export default function MultiplayerPage() {
         else
             navigate("/login")
     }, [])
+
+
+    /* User information dialog state */
+    const [isDialogOpen, setDialogOpen] = useState(false)
+    const [watchingUserId, setWatchingUserId] = useState(0)
+    const [currentWatchingUser, setCurrentWatchingUser] = useState({})
+
+    useEffect(() => {
+        if (watchingUserId == 0)
+            return
+
+        FetchUserPublicInfo(token, watchingUserId)
+        .then(({data}) => {
+            setCurrentWatchingUser(data)
+        })
+        .catch(err => {
+            setDialogOpen(false)
+            toast({
+                description: "Error retrieving user info. Check connection"
+            })
+        })
+    }, [watchingUserId])
+
 
     function sendChallengeRequest(rival_id) {
         sendJsonMessage({
@@ -161,10 +186,16 @@ export default function MultiplayerPage() {
             </div>
         </header>
 
-        <UserList {...{user, sendChallengeRequest, members}}></UserList>
+        <UserList {...{user, members}} sendChallengeRequest={(opponentId) => {
+            setWatchingUserId(opponentId)
+            setDialogOpen(true)
+        }} />
 
         <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
         <p>Selected puzzle: {selectedProblem}</p>
+
+
+        <UserInfoDialog open={isDialogOpen} onOpenChange={setDialogOpen} user={currentWatchingUser} handleSendChallenge={() => {sendChallengeRequest(watchingUserId)}}></UserInfoDialog>
         <Toaster />
     </div>
 }
