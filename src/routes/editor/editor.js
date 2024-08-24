@@ -2,10 +2,10 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Button } from "../../components/ui/button"
 import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
-import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon } from "lucide-react"
+import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon, TrophyIcon, FrownIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest, pollAttempt, puzzleAttemptRequestMultiplayer, getPreviousAttemptsMultiplayer } from "../../lib/api/puzzle"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { AuthenticationContext, CurrentUserContext } from "../../lib/api"
 import { useContext } from "react"
 import { HomeButton } from "../../components/homebutton"
@@ -20,7 +20,7 @@ import { CompileResultsDrawer } from "./resultsdrawer"
 import React from "react"
 import { useChallenge } from "../multiplayer/challengecontext"
 import { useMultiplayerWebsocket } from "../multiplayer/websocket"
-import { Dialog } from "@radix-ui/react-dialog"
+import EndDialog from "./enddialog"
 
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
@@ -123,19 +123,6 @@ function CompletionStatus({attempts}) {
     return <></>
 }
 
-function ChallengeEndDialog({open, winner}) {
-  return <Dialog.Root open={open} onOpenChange={()=>{}}>
-    <Dialog.Trigger />
-    <Dialog.Portal>
-      <Dialog.Overlay />
-      <Dialog.Content>
-        <Dialog.Title>The challenge ends here</Dialog.Title>
-        <Dialog.Description>{winner?"You win":"You lose"}</Dialog.Description>
-        <Dialog.Close />
-      </Dialog.Content>
-    </Dialog.Portal>
-  </Dialog.Root>
-}
 
 export default function EditorPage({multiplayer}) {
   const [language, setLanguage] = useState("C")
@@ -160,6 +147,8 @@ export default function EditorPage({multiplayer}) {
     build_error: false,
     passed: false
   });
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getPuzzle(pk).then(response => {
@@ -272,6 +261,8 @@ export default function EditorPage({multiplayer}) {
 
   const {lastJsonMessage, sendJsonMessage} = useMultiplayerWebsocket()
 
+  const [openEndDialog, setOpenEndDialog] = useState(false)
+
   useEffect(() => {
     if (multiplayer && "stop" in lastJsonMessage) {
       const {stop: {result}} = lastJsonMessage
@@ -279,6 +270,7 @@ export default function EditorPage({multiplayer}) {
         challengeOngoing: false,
         amITheWinner: (result == "winner")
       })
+      setOpenEndDialog(true)
     }
   }, [lastJsonMessage])
 
@@ -294,7 +286,7 @@ export default function EditorPage({multiplayer}) {
         <div className="flex items-center gap-4">
           <CompletionStatus  attempts={attempts}/>
           <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
-          <Button onClick={sendAttempt}>Build</Button>
+          <Button onClick={sendAttempt} disabled={multiplayer && !challengeOngoing}>Build</Button>
           <AttemptsDrawer attempts={attempts}></AttemptsDrawer>
           <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
         </div>
@@ -320,13 +312,18 @@ export default function EditorPage({multiplayer}) {
             autoComplete="off"
           />
           <div className="absolute bottom-4 right-4">
-          <CompileResultsDrawer errors={lastAttempt.results} isCompilerError={lastAttempt.build_error}></CompileResultsDrawer>
+            {
+              multiplayer && !challengeOngoing && <Button onClick={() => {navigate("/multiplayer")}} className="mr-2">Go to lobby</Button>
+            }
+            <CompileResultsDrawer errors={lastAttempt.results} isCompilerError={lastAttempt.build_error}></CompileResultsDrawer>
           </div>
         </div>
       </div>
 
+      {
+        multiplayer && <EndDialog open={openEndDialog} onOpenChange={setOpenEndDialog} winner={amITheWinner} myself={user} rival={opponent}/>
+      }
       <Toaster />
-
     </div>
   )
 }
