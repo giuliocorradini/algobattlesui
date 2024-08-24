@@ -9,29 +9,39 @@ import { useNavigate } from "react-router-dom";
 import { useChallenge } from "./challengecontext";
 import { HomeButton } from "../../components/homebutton";
 import { AccountButton } from "../../components/accountbutton";
-import { UserCard } from "./user";
+import { UserCard, UserCardWithButton } from "./user";
 import UserInfoDialog from "./userinfodialog";
 import { FetchUserPublicInfo } from "../../lib/api/user";
 
-function Member({id, username, first_name, last_name, deactivate, sendRequest}) {
-    return <div>
-        {username}, with ID {id}. {first_name} {last_name}
-        {deactivate ? <></> : <button onClick={() => {sendRequest(id)}}>Send request</button>}
-    </div>
 
-}
-
-function UserList({members, sendChallengeRequest, user}) {
+function UserList({members, showUserDetail, user}) {
     return <div className="container mx-auto px-4 py-8">
         <h2 className="text-xl font-bold mb-4">Active users</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
             {
-                members.filter(m => m.username != user.username).map((m, i) => <UserCard key={i} user={{ ...m }} sendRequest={() => sendChallengeRequest(m.id)} />)
+                members.filter(m => m.username != user.username).map((m, i) => <UserCard key={i} user={{ ...m }} clickAction={() => showUserDetail(m.id)} />)
             }
 
         </div>
     </div>
+}
+
+/**
+ * Horizontally scrollable (TODO) list of received requests for challenge. Shows the other user
+ */
+function ChallengeRequestsList({requests, acceptChallenge}) {
+    return requests.length > 0 &&
+        <div className="container mx-auto px-4 py-8">
+            <h2 className="text-xl font-bold mb-4">Challenge requests</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+                {
+                    requests.map((chal, i) => <UserCardWithButton key={i} user={chal.sender} acceptChallenge={() => acceptChallenge(chal.id, chal.sender)}/>)
+                }
+
+            </div>
+        </div>
 }
 
 function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem}) {
@@ -66,6 +76,8 @@ export default function MultiplayerPage() {
             navigate("/login")
     }, [])
 
+
+    const [challengeRequests, setChallengeRequests] = useState([])
 
     /* User information dialog state */
     const [isDialogOpen, setDialogOpen] = useState(false)
@@ -119,11 +131,12 @@ export default function MultiplayerPage() {
         }
 
         if ("challenge" in lastJsonMessage) {
-            const {challenge} = lastJsonMessage
+            const {challenge: {last, all}} = lastJsonMessage
+            setChallengeRequests(all)
             toast({
                 title: "Challenge",
-                description: `User ${challenge.from.username} has sent you a challenge`,
-                action: <Button onClick={() => {acceptChallenge(challenge.id, challenge.from)}}>Accept</Button>
+                description: `User ${last.from.username} has sent you a challenge`,
+                action: <Button onClick={() => {acceptChallenge(last.id, last.from)}}>Accept</Button>
             })
         }
 
@@ -150,6 +163,14 @@ export default function MultiplayerPage() {
         if ("puzzle" in lastJsonMessage) {
             setSelectedProblem(lastJsonMessage.puzzle.id)
             navigate(`/multiplayer/editor/${lastJsonMessage.puzzle.id}`)
+        }
+
+        if ("error" in lastJsonMessage) {
+            toast({
+                title: "Error",
+                description: lastJsonMessage.error,
+                variant: "destructive"
+            })
         }
     }
 
@@ -186,14 +207,18 @@ export default function MultiplayerPage() {
             </div>
         </header>
 
-        <UserList {...{user, members}} sendChallengeRequest={(opponentId) => {
-            setWatchingUserId(opponentId)
-            setDialogOpen(true)
-        }} />
-
-        <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
-        <p>Selected puzzle: {selectedProblem}</p>
-
+        {
+            challenge == 0 ? <>
+                <ChallengeRequestsList
+                requests={challengeRequests}
+                acceptChallenge={acceptChallenge} />
+                <UserList {...{user, members}} showUserDetail={(opponentId) => {
+                    setWatchingUserId(opponentId)
+                    setDialogOpen(true)
+                }} /> 
+            </>:
+                <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
+        }
 
         <UserInfoDialog open={isDialogOpen} onOpenChange={setDialogOpen} user={currentWatchingUser} handleSendChallenge={() => {sendChallengeRequest(watchingUserId)}}></UserInfoDialog>
         <Toaster />
