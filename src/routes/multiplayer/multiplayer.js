@@ -19,6 +19,19 @@ function Member({id, username, first_name, last_name, deactivate, sendRequest}) 
 
 }
 
+function UserList({members, sendChallengeRequest, user}) {
+    return <div className="container mx-auto px-4 py-8">
+        <h2 className="text-xl font-bold mb-4">Active users</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+            {
+                members.filter(m => m.username != user.username).map((m, i) => <UserCard key={i} user={{ ...m }} sendRequest={() => sendChallengeRequest(m.id)} />)
+            }
+
+        </div>
+    </div>
+}
+
 function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem}) {
     if (role == "starter")
         return [<p>Seleziona puzzle</p>,
@@ -26,6 +39,7 @@ function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem
             <button onClick={() => {sendProblem()}}>Set problem</button>]
     return <></>
 }
+
 
 export default function MultiplayerPage() {
     const { isLogged, token } = useContext(AuthenticationContext)
@@ -147,22 +161,7 @@ export default function MultiplayerPage() {
             </div>
         </header>
 
-        <p>Last message: {lastJsonMessage ? lastJsonMessage.message : ""}</p>
-
-        <button onClick={() => {sendJsonMessage({
-            message: "west end girls"
-        })}}>Send message</button>
-
-        <div className="container mx-auto px-4 py-8">
-            <p>Active users</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-
-                {
-                    members.filter(m => m.username != user.username).map((m, i) => <UserCard key={i} user={{ ...m }} sendRequest={() => sendChallengeRequest(m.id)} />)
-                }
-
-            </div>
-        </div>
+        <UserList {...{user, sendChallengeRequest, members}}></UserList>
 
         <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
         <p>Selected puzzle: {selectedProblem}</p>
