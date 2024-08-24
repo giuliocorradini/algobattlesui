@@ -271,8 +271,9 @@ export default function EditorPage({multiplayer}) {
   const [{challengeOngoing, amITheWinner}, setChallengeStatus] = useState({challengeOngoing: true, amITheWinner: false})
 
   const {lastJsonMessage, sendJsonMessage} = useMultiplayerWebsocket()
+
   useEffect(() => {
-    if ("stop" in lastJsonMessage) {
+    if (multiplayer && "stop" in lastJsonMessage) {
       const {stop: {result}} = lastJsonMessage
       setChallengeStatus({
         challengeOngoing: false,
