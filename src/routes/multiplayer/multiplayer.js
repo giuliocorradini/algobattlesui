@@ -179,7 +179,7 @@ export default function MultiplayerPage() {
         if (readyState == ReadyState.OPEN && !enteredLobby) {
             authenticate(token)
             sendJsonMessage({"enter": "lobby"})
-            setEnteredLobby(false)
+            setEnteredLobby(true)
         }
     }, [readyState])
 

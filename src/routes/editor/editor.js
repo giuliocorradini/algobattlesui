@@ -140,7 +140,7 @@ export default function EditorPage({multiplayer}) {
   const {isLogged, token, ...auth} = useContext(AuthenticationContext)
   const {user, setUser} = useContext(CurrentUserContext)
 
-  const { challenge, opponent } = useChallenge()
+  const { challenge, opponent, setChallenge } = useChallenge()
 
   const [lastAttempt, setLastAttempt] = useState({
     results: null,
@@ -271,6 +271,7 @@ export default function EditorPage({multiplayer}) {
         amITheWinner: (result == "winner")
       })
       setOpenEndDialog(true)
+      setChallenge(0)
     }
   }, [lastJsonMessage])
 
