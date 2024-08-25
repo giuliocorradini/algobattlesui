@@ -12,6 +12,7 @@ import { HomeButton } from "../components/homebutton"
 import { AccountButton } from "../components/accountbutton"
 import { Toaster } from "../components/ui/toaster"
 import { FetchFeaturedProblems } from "../lib/api/home"
+import { SearchBar, SearchResults } from "../components/search"
 
 function LoggedInActions() {
   const navigate = useNavigate()
@@ -124,6 +125,7 @@ export default function HomePage() {
   const { user, setUser } = useContext(CurrentUserContext)
 
   const [featuredProblems, setFeaturedProblems] = useState([])
+  const [searchResults, setSearchResults] = useState(null)
 
   useEffect(() => {
     if(isLogged)
@@ -179,14 +181,7 @@ export default function HomePage() {
             </Sheet>
           </div>
 
-          <div className="relative flex items-center">
-            <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search puzzles..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
+          <SearchBar setResults={setSearchResults} />
           <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
 
          
@@ -200,6 +195,10 @@ export default function HomePage() {
             {title: "Puzzle 2", difficulty: "Medium", id: 2, categories: ["greedy"]}
           ]}
           ></PuzzleCollection>
+
+          {
+            searchResults != null && <SearchResults results={searchResults}/>
+          }
 
           {
             featuredProblems.map((c, i) => <PuzzleCollection
