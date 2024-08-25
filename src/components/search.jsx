@@ -40,7 +40,7 @@ export function SearchBar({ setResults }) {
 
 
 
-export function SearchResults({ results }) {
+export function SearchResults({ results, openProblem }) {
     const [sortColumn, setSortColumn] = useState("title")
     const [sortDirection, setSortDirection] = useState("asc")
 
@@ -103,7 +103,7 @@ export function SearchResults({ results }) {
                     </TableHeader>
                     <TableBody>
                         {sortedResults.map((puzzle) => (
-                            <TableRow key={puzzle.id}>
+                            <TableRow key={puzzle.id} onClick={() => {openProblem(puzzle.id)}}>
                                 <TableCell className="font-medium">{puzzle.title}</TableCell>
                                 <TableCell>
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficulty[puzzle.difficulty].color}`}>

@@ -127,6 +127,9 @@ export default function HomePage() {
   const [featuredProblems, setFeaturedProblems] = useState([])
   const [searchResults, setSearchResults] = useState(null)
 
+  const navigate = useNavigate()
+  const openProblem = (pk) => navigate(`editor/${pk}`)
+
   useEffect(() => {
     if(isLogged)
       FetchUserInfo(token).then((response) => {
@@ -197,7 +200,7 @@ export default function HomePage() {
           ></PuzzleCollection>
 
           {
-            searchResults != null && <SearchResults results={searchResults}/>
+            searchResults != null && <SearchResults results={searchResults} openProblem={openProblem}/>
           }
 
           {
