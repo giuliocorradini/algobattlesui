@@ -12,6 +12,7 @@ import { AccountButton } from "../../components/accountbutton";
 import { UserCard, UserCardWithButton } from "./user";
 import UserInfoDialog from "./userinfodialog";
 import { FetchUserPublicInfo } from "../../lib/api/user";
+import LoadingCard from "./loadingcard";
 
 
 function UserList({members, showUserDetail, user}) {
@@ -49,7 +50,8 @@ function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem
         return [<p>Seleziona puzzle</p>,
             <input type="number" value={selectedProblem} onChange={setSelectedProblem}></input>,
             <button onClick={() => {sendProblem()}}>Set problem</button>]
-    return <></>
+
+    return <LoadingCard />
 }
 
 
