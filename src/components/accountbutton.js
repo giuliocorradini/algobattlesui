@@ -13,6 +13,7 @@ export function AccountButton({username, email, picture}) {
       logoutRequest().then(response => {}).catch(error => {})
       invalidateLocalStorageToken()
       auth.setAuthentication([false, null])
+      navigate("/")
     }
   
     function DefaultUserImage() {
