@@ -13,6 +13,8 @@ import { UserCard, UserCardWithButton } from "./user";
 import UserInfoDialog from "./userinfodialog";
 import { FetchUserPublicInfo } from "../../lib/api/user";
 import LoadingCard from "./loadingcard";
+import { SearchBar, SearchResults } from "../../components/search";
+import FeaturedProblems from "../../components/featuredproblems";
 
 
 function UserList({members, showUserDetail, user}) {
@@ -45,11 +47,16 @@ function ChallengeRequestsList({requests, acceptChallenge}) {
         </div>
 }
 
-function PuzzleSelection({selectedProblem, setSelectedProblem, role, sendProblem}) {
+function PuzzleSelection({role, sendProblem}) {
+    const [searchResults, setSearchResults] = useState([])
+
     if (role == "starter")
-        return [<p>Seleziona puzzle</p>,
-            <input type="number" value={selectedProblem} onChange={setSelectedProblem}></input>,
-            <button onClick={() => {sendProblem()}}>Set problem</button>]
+        return [
+            <h2 className="text-xl">Select a puzzle</h2>,
+            <FeaturedProblems openProblem={sendProblem} />,
+            <SearchBar setResults={setSearchResults}/>,
+            <SearchResults results={searchResults} openProblem={sendProblem}/>,
+        ]
 
     return <LoadingCard />
 }
@@ -190,16 +197,17 @@ export default function MultiplayerPage() {
     }, [])
 
     const [selectedProblem, setSelectedProblem] = useState(0)
-    function sendProblem() {
+    function sendProblem(pk) {
+        setSelectedProblem(pk)
         sendJsonMessage({
             "puzzle": {
                 "set": {
-                    "id": selectedProblem
+                    "id": pk
                 }
             }
         })
 
-        navigate(`/multiplayer/editor/${selectedProblem}`)
+        navigate(`/multiplayer/editor/${pk}`)
     }
 
     return <div className="flex flex-col h-screen">
@@ -223,7 +231,7 @@ export default function MultiplayerPage() {
                     setDialogOpen(true)
                 }} /> 
             </>:
-                <PuzzleSelection selectedProblem={selectedProblem} setSelectedProblem={evt => {setSelectedProblem(evt.target.value)}} role={role} sendProblem={sendProblem}></PuzzleSelection>
+                <PuzzleSelection role={role} sendProblem={sendProblem}></PuzzleSelection>
         }
 
         <UserInfoDialog open={isDialogOpen} onOpenChange={setDialogOpen} user={currentWatchingUser} handleSendChallenge={() => {sendChallengeRequest(watchingUserId)}}></UserInfoDialog>
