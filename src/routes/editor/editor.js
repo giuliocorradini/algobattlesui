@@ -126,7 +126,6 @@ function CompletionStatus({attempts}) {
 
 export default function EditorPage({multiplayer}) {
   const [language, setLanguage] = useState("C")
-  const [errorMessage, setErrorMessage] = useState("")
   const [problemDescription, setProblemDescription] = useState({})
   const [publicTests, setPublicTests] = useState([])
   const [editorContent, setEditorContent] = useState("")
@@ -150,24 +149,35 @@ export default function EditorPage({multiplayer}) {
 
   const navigate = useNavigate()
 
+  const {toast} = useToast()
+
+  function setErrorMessage(error) {
+    toast({
+      title: "Error",
+      description: error,
+      variant: "destructive"
+    })
+  }
+
   useEffect(() => {
     getPuzzle(pk).then(response => {
       setProblemDescription(response.data)
     })
     .catch(err => {
-      setErrorMessage(err)
+      navigate("/")
+      setErrorMessage(err.response.data.detail)
     })
 
     getPuzzlePublicTests(pk).then(response => {
       setPublicTests(response.data)
     })
-    .catch(err => setErrorMessage(err))
+    .catch(err => {})
 
     let attemptsRequest = multiplayer ? getPreviousAttemptsMultiplayer(pk, token, challenge) : getPreviousAttempts(pk, token)
     attemptsRequest.then(response => {
       setAttempts(response.data)
     })
-    .catch(err => setErrorMessage(err))
+    .catch(err => {})
   }, [])
 
   useEffect(() => {
@@ -183,7 +193,7 @@ export default function EditorPage({multiplayer}) {
     waitingResponse: false,
     attemptId: null
   })
-  const {toast} = useToast()
+
   function sendAttempt() {
     setResponseStatus({waitingResponse: false})
     
