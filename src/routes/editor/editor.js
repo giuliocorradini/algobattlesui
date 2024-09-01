@@ -214,13 +214,18 @@ export default function EditorPage({multiplayer}) {
       })
     })
     .catch(err => {
-      toast({
-        title: "Build error",
-        description: "There was an error submitting your attempt. Please retry.",
-        variant: "destructive"
-      })
-      setErrorMessage(err)
-      console.log(err)
+      if (err.response.status == 401)
+        toast({
+          title: "Unauthorized",
+          description: "You must log in to submit a solution.",
+          variant: "destructive"
+        })
+      else
+        toast({
+          title: "Build error",
+          description: "There was an error submitting your attempt. Please retry.",
+          variant: "destructive"
+        })
     })
   }
 
