@@ -306,15 +306,18 @@ export default function EditorPage({multiplayer}) {
           <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
         </div>
       </header>
-      <div className="flex-1 grid grid-cols-[1fr_2fr]">
+      <div className="flex-1 grid grid-cols-[1fr_2fr] overflow-auto">
 
         <PuzzleText title={problemDescription.title} description={problemDescription.description} example={exampleTest} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
-        <div className="relative bg-background p-6 overflow-auto">
-          <div className="absolute top-0 left-0 w-8 bg-gray-100 text-gray-500 text-right pr-2 pt-2 pb-2 select-none">
+        <div className="relative bg-background p-2">
+          <div className="absolute top-0 left-0 min-h-full bg-muted text-gray-500 text-right pr-2 pt-2 select-none text-sm font-mono">
+            <div className="">
             {Array.from({ length: lineCount }, (_, i) => (
               <div key={i + 1}>{i + 1}</div>
             ))}
+
+            </div>
           </div>
           <Textarea
             value={editorContent}
@@ -328,7 +331,7 @@ export default function EditorPage({multiplayer}) {
           />
           <div className="absolute bottom-4 right-4">
             {
-              multiplayer && !challengeOngoing && <Button onClick={() => {navigate("/multiplayer")}} className="mr-2">Go to lobby</Button>
+              multiplayer && !challengeOngoing && <Button onClick={() => { navigate("/multiplayer") }} className="mr-2">Go to lobby</Button>
             }
             <CompileResultsDrawer errors={lastAttempt.results} isCompilerError={lastAttempt.build_error}></CompileResultsDrawer>
           </div>
