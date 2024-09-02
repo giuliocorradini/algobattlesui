@@ -187,6 +187,14 @@ export default function MultiplayerPage() {
                 variant: "destructive"
             })
         }
+
+        if ("restore" in lastJsonMessage) {
+            const {challenge, opponent, puzzle} = lastJsonMessage.restore
+            setChallenge(challenge.id)
+            setOpponent(opponent)
+            setSelectedProblem(puzzle.id)
+            navigate(`/multiplayer/editor/${puzzle.id}`)
+        }
     }
 
     useEffect(decodeLastJsonEffect, [lastJsonMessage])

@@ -20,6 +20,7 @@ import RegisterPage from './routes/register/register';
 import MultiplayerPage from './routes/multiplayer/multiplayer';
 import { MultiplayerWebsocketProvider } from './routes/multiplayer/websocket';
 import { ChallengeContextProvider } from './routes/multiplayer/challengecontext';
+import PublisherPage from './routes/publisher/publisher';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
   {
     path: "/multiplayer/editor/:pk",
     element: <EditorPage multiplayer />
+  },
+  {
+    path: "/publisher",
+    element: <PublisherPage multiplayer />
   }
   ]);
 
