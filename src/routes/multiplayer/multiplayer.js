@@ -148,11 +148,13 @@ export default function MultiplayerPage() {
         if ("challenge" in lastJsonMessage) {
             const {challenge: {last, all}} = lastJsonMessage
             setChallengeRequests(all)
-            toast({
-                title: "Challenge",
-                description: `User ${last.from.username} has sent you a challenge`,
-                action: <Button onClick={() => {acceptChallenge(last.id, last.from)}}>Accept</Button>
-            })
+
+            if (last)
+                toast({
+                    title: "Challenge",
+                    description: `User ${last.from.username} has sent you a challenge`,
+                    action: <Button onClick={() => {acceptChallenge(last.id, last.from)}}>Accept</Button>
+                })
         }
 
         if ("accept" in lastJsonMessage) {
