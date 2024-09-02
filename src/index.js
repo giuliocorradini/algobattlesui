@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './globals.css'
-import HomePage from './routes/home';
+import HomePage from './routes/home/home';
 import reportWebVitals from './reportWebVitals';
 import {
   createBrowserRouter,
