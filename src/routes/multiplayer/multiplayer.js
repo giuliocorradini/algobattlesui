@@ -51,12 +51,17 @@ function PuzzleSelection({role, sendProblem}) {
     const [searchResults, setSearchResults] = useState([])
 
     if (role == "starter")
-        return [
-            <h2 className="text-xl">Select a puzzle</h2>,
-            <FeaturedProblems openProblem={sendProblem} />,
-            <SearchBar setResults={setSearchResults}/>,
-            <SearchResults results={searchResults} openProblem={sendProblem}/>,
-        ]
+        return <div className="container mx-auto px-4 py-4">
+            <h2 className="text-xl font-bold">Select a puzzle</h2>
+            <div className="py-5">
+                <SearchBar setResults={setSearchResults} className="mb-5" />
+                <SearchResults results={searchResults} openProblem={sendProblem} />
+            </div>
+            <h2 className="text-xl font-bold mb-4">Or pick one from the featured</h2>
+            <div>
+                <FeaturedProblems openProblem={sendProblem} />
+            </div>
+        </div>
 
     return <LoadingCard />
 }

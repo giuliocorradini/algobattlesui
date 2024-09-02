@@ -5,8 +5,9 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from ".
 import { Button } from "./ui/button"
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react"
 import { Badge } from "@radix-ui/themes"
+import { cn } from "../lib/utils"
 
-export function SearchBar({ setResults }) {
+export function SearchBar({ setResults, className }) {
     const [query, setQuery] = useState("")
 
     function performSearch() {
@@ -21,7 +22,7 @@ export function SearchBar({ setResults }) {
                 .catch(err => { })
     }
 
-    return <div className="relative flex items-center">
+    return <div className={cn("relative flex items-center", className)}>
         <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <form onSubmit={evt => {
             evt.preventDefault()
@@ -77,7 +78,7 @@ export function SearchResults({ results, openProblem }) {
     }
 
     return (
-        <div className="container mx-auto py-10">
+        <div>
             <h2 className="text-xl font-medium mb-4">Results</h2>
 
             {results.length == 0 ? <div>
