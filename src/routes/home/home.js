@@ -103,7 +103,7 @@ export default function HomePage() {
     <Header user={user} setResults={setSearchResults} />
 
     <main className="mx-8">
-      <HighlightedCategories categories={highlight_categories}></HighlightedCategories>
+      
       <Actions isLogged={isLogged}></Actions>
       {
         searchResults != null && <SearchResults results={searchResults} openProblem={openProblem} />

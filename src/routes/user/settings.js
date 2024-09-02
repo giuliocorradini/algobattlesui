@@ -37,7 +37,7 @@ function StickyPageNavigation({title, children}) {
         return ""
     }
 
-    return <div className="md:sticky top-10">
+    return <div className="md:sticky top-16">
         <nav className="text-sm text-muted-foreground grid gap-4">
             <div className="max-w-6xl w-full mx-auto text-primary">
                 <h1 className="font-semibold text-3xl">{title}</h1>
@@ -156,9 +156,6 @@ export default function SettingsPage() {
                 setErrors(data)
             })
     }
-
-    //TODO: make the update button active when default data is changed
-    //TODO: set maximum file size for picture
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
