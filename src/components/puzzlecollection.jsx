@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 //TODO: show categories
 export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, problemCallback }) {
-    return <Card className="w-[200px] shrink-0">
+    return <Card className="w-[200px] flex-shrink-0">
         <CardContent className="flex aspect-[3/4] items-center justify-center rounded-md bg-background p-4">
             <img
                 src="/placeholder.svg"
@@ -28,23 +28,19 @@ export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, pr
  * `editor/puzzle_key`
  * @returns 
  */
-export default function PuzzleCollection({ collectionName, content, openProblem }) {
+export default function PuzzleCollection({ collectionName, content, openProblem, seeAll }) {
     const navigate = useNavigate()
     const problemCallback = (openProblem == null) ? (pk) => navigate(`editor/${pk}`) : openProblem
+    const seeAllCallback = (seeAll == null) ? () => navigate(`/show?cat=${collectionName}`) : seeAll
 
-    return <section>
-        <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{collectionName}</h2>
-            <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                View all
-            </Link>
-        </div>
-        <div className="mt-4 flex gap-4 overflow-auto">
+    return <div className="w-full">
+        <h2 onClick={seeAllCallback} className="text-lg font-semibold pb-4">{collectionName}</h2>
+        <div className="flex flex-nowrap overflow-x-auto space-x-4">
 
             {content.map((p, i) => {
                 return <PuzzleCollectionCard key={i} {...p} problemCallback={problemCallback}></PuzzleCollectionCard>
             })}
 
         </div>
-    </section>
+    </div>
 }

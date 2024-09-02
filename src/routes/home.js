@@ -156,13 +156,6 @@ export default function HomePage() {
 
         <main className="grid gap-4 p-4 md:p-6">
 
-          <PuzzleCollection
-          collectionName="Debug"
-          content={[
-            {title: "Puzzle 2", difficulty: "Medium", id: 2, categories: ["greedy"]}
-          ]}
-          ></PuzzleCollection>
-
           {
             searchResults != null && <SearchResults results={searchResults} openProblem={openProblem}/>
           }
