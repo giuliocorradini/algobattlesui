@@ -13,9 +13,6 @@ import { FetchUserInfo } from "../../lib/api/user"
 import { AccountButton } from "../../components/accountbutton"
 import { Toaster } from "../../components/ui/toaster"
 import { useToast } from "../../components/ui/use-toast"
-import { ToastAction } from "../../components/ui/toast"
-import { Label } from "../../components/ui/label"
-import { Input } from "../../components/ui/input"
 import { CompileResultsDrawer } from "./resultsdrawer"
 import React from "react"
 import { useChallenge } from "../multiplayer/challengecontext"
@@ -109,6 +106,17 @@ function AttemptsDrawer({attempts}) {
       </div>
     </DrawerContent>
   </Drawer>
+}
+
+function Linecounter({lineCount}) {
+  return <div className="absolute top-0 left-0 min-h-full bg-muted text-gray-500 text-right pr-2 pt-2 select-none text-sm font-mono">
+    <div className="">
+      {Array.from({ length: lineCount }, (_, i) => (
+        <div key={i + 1}>{i + 1}</div>
+      ))}
+
+    </div>
+  </div>
 }
 
 function CompletionStatus({attempts}) {
@@ -311,19 +319,11 @@ export default function EditorPage({multiplayer}) {
         <PuzzleText title={problemDescription.title} description={problemDescription.description} example={exampleTest} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
         <div className="relative bg-background p-2">
-          <div className="absolute top-0 left-0 min-h-full bg-muted text-gray-500 text-right pr-2 pt-2 select-none text-sm font-mono">
-            <div className="">
-            {Array.from({ length: lineCount }, (_, i) => (
-              <div key={i + 1}>{i + 1}</div>
-            ))}
-
-            </div>
-          </div>
           <Textarea
             value={editorContent}
             onChange={e => setEditorContent(e.target.value)}
             placeholder="Write your code here..."
-            className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none font-mono"
+            className="w-full h-full resize-none border-none focus:ring-0 focus:outline-none font-mono pl-2"
             spellCheck={false}
             autoCorrect="off"
             autoCapitalize="off"
