@@ -1,25 +1,37 @@
-import { Card, CardContent, CardFooter } from "./ui/card"
-import { Link } from "react-router-dom"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { Badge } from "./ui/badge"
+import { Button } from "./ui/button"
 import { useNavigate } from "react-router-dom"
 
-//TODO: show categories
 export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, problemCallback }) {
-    return <Card className="w-[200px] flex-shrink-0">
-        <CardContent className="flex aspect-[3/4] items-center justify-center rounded-md bg-background p-4">
-            <img
-                src="/placeholder.svg"
-                alt="Puzzle"
-                className="aspect-[3/4] w-full rounded-md object-cover"
-                width="200"
-                height="300"
-            />
-        </CardContent>
-        <CardFooter>
-            <div className="text-sm font-medium">{title}</div>
-            <div className="text-xs text-muted-foreground">{difficulty}</div>
-        </CardFooter>
-        <Link onClick={() => problemCallback(pk)}>Open</Link>
-    </Card>
+    const difficultyColors = {
+        E: "bg-green-500",
+        M: "bg-yellow-500",
+        H: "bg-red-500",
+    }
+
+    return (
+        <Card className="w-full max-w-sm h-[300px] flex flex-col justify-between">
+            <CardHeader>
+                <CardTitle className="text-center">{title}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow flex flex-col items-center gap-4">
+                <Badge className={`${difficultyColors[difficulty]} text-white`}>
+                    {difficulty}
+                </Badge>
+                <Button onClick={() => problemCallback(pk)}>Open</Button>
+                <div className="flex flex-wrap justify-center gap-2">
+                    {categories.map((category, index) => (
+                        <Badge key={index} variant="outline">
+                            {category}
+                        </Badge>
+                    ))}
+                </div>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+            </CardFooter>
+        </Card>
+    )
 }
 
 /**
