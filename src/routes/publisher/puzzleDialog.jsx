@@ -83,11 +83,7 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
 };
 
 export function CreatePuzzleDialog(params) {
-  const [open, setOpen] = useState(false)
-
   return <PuzzleDialog
-    open={open}
-    setOpen={setOpen}
     openButton={<NewProblemButton />}
     {...params}
   />

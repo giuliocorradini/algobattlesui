@@ -79,6 +79,7 @@ export default function PublisherPage() {
         errorLabel: errorFor(field)
     }}
 
+    const [openCreationDialog, setOpenCreationDialog] = useState(false)
     function handleCreationSubmit(evt) {
         evt.preventDefault()
 
@@ -102,66 +103,7 @@ export default function PublisherPage() {
                 })
 
                 setUser(response.data)
-            })
-            .catch(({response: {data}}) => {
-                setErrors(data)
-            })
-    }
-
-    function handlePasswordSubmit(evt) {
-        evt.preventDefault()
-
-        const formData = evt.target;
-        const new_password = formData.new_password.value
-        const old_password = formData.old_password.value
-        const password_repeat = formData.new_password_check.value
-
-        if (new_password != password_repeat) {
-            setErrors({
-                new_password_check: "New password and password check do not match."
-            })
-            return
-        }
-
-        UpdatePassword(auth.token, {
-            new_password: new_password,
-            old_password: old_password
-        })
-            .then(response => {
-                invalidateLocalStorageToken()
-                auth.setAuthentication([false, null])
-                setUser({})
-                
-                navigate("/")
-                toast({
-                    title: "Password",
-                    description: "Your password has been successfully changed. Your session has been invalidated and you have been disconnected. Please log back in."
-                })  // Pops up in homepage toaster
-            })
-            .catch(({response: {data}}) => {
-                setErrors(data)
-            })
-    }
-
-    const [image, setImage] = useState()
-    function handlePictureSubmit(evt) {
-        evt.preventDefault()
-
-        console.log(image)
-        let formData = new FormData()
-        formData.append("picture", image)
-
-        UploadPicture(auth.token, formData)
-            .then(response => {
-                toast({
-                    title: "Successful update",
-                    description: "Your user picture was updated successfully."
-                })
-
-                setUser({
-                    ...user,
-                    ...response.data
-                })
+                setOpenCreationDialog(false)
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -206,7 +148,7 @@ export default function PublisherPage() {
             </main>
 
             <Toaster></Toaster>
-            <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} />
+            <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} />
         </div>
     )
 }
