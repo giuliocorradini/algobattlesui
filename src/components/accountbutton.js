@@ -58,10 +58,10 @@ export function AccountButton({username, email, picture}) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>{username}</DropdownMenuItem>
-        <DropdownMenuItem>{email}</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
+        <DropdownMenuItem className="font-bold data-[disabled]:opacity-100" disabled>{username}</DropdownMenuItem>
+        <DropdownMenuItem className="data-[disabled]:opacity-100" disabled>{email}</DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
