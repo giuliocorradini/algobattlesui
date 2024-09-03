@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../../components/ui/button"
-import { ChevronRightIcon, BookmarkIcon, PuzzleIcon, UserRound, UserRoundPen, NetworkIcon } from "lucide-react"
+import { ChevronRightIcon, BookmarkIcon, PuzzleIcon, UserRound, UserRoundPen, NetworkIcon, Plus, Pen } from "lucide-react"
 import { AuthenticationContext, CurrentUserContext, } from "../../lib/api"
 import { useContext, useEffect, useState } from "react"
 import { FetchUserInfo } from "../../lib/api/user"
@@ -12,7 +12,7 @@ import Header from "./header"
 
 function LoggedInActions() {
   const navigate = useNavigate()
-
+  //TODO: recently played
   return <>
     <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left">
       <BookmarkIcon className="h-4 w-4" />
@@ -40,14 +40,32 @@ function AnonymousActions() {
   </>
 }
 
-function Actions({ isLogged }) {
-  if (isLogged)
-    return [
-      <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>,
-      <LoggedInActions></LoggedInActions>
-    ]
-  else
+function PublisherActions() {
+  const navigate = useNavigate();
+
+  return <>
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => navigate("/publisher?add")}>
+      <Plus className="h-4 w-4" />
+      <span>Add</span>
+    </Button>
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => navigate("/publisher")}>
+      <Pen className="h-4 w-4" />
+      <span>Manage</span>
+    </Button>
+  </>
+}
+
+function Actions({ isLogged, isPublisher }) {
+  if (!isLogged)
     return <></>
+
+  return [
+    <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>,
+    (isPublisher ?
+      <PublisherActions></PublisherActions> :
+      <LoggedInActions></LoggedInActions>
+    )
+  ]
 }
 
 function CategoryElement({ name, link }) {
@@ -104,7 +122,7 @@ export default function HomePage() {
 
     <main className="mx-8">
       
-      <Actions isLogged={isLogged}></Actions>
+      <Actions isLogged={isLogged} isPublisher={user.is_publisher}></Actions>
       {
         searchResults != null && <SearchResults results={searchResults} openProblem={openProblem} />
       }
