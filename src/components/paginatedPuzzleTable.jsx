@@ -2,27 +2,28 @@ import { useState, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
+import { ChevronFirst, ChevronLast } from 'lucide-react'
 
 
-export default function PaginatedPuzzleTable({fetchPuzzles, setPuzzles, puzzles}) {
+export default function PaginatedPuzzleTable({ fetchPuzzles, setPuzzles, puzzles }) {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
 
     useEffect(() => {
         fetchPuzzles(currentPage)
-        .then(response => {
-            const {results, count} = response.data
+            .then(response => {
+                const { results, count } = response.data
 
-            setPuzzles(results)
-            setTotalPages(Math.ceil(count / 10))
-        })
-        .catch(err => {})
+                setPuzzles(results)
+                setTotalPages(Math.ceil(count / 10))
+            })
+            .catch(err => { })
     }, [currentPage])
 
     const DifficultyLUTs = {
-        E: {color: 'bg-green-500', label: "Easy"},
-        M: {color: 'bg-yellow-500', label: "Medium"},
-        H: {color: 'bg-red-500', label: "Hard"},
+        E: { color: 'bg-green-500', label: "Easy" },
+        M: { color: 'bg-yellow-500', label: "Medium" },
+        H: { color: 'bg-red-500', label: "Hard" },
     }
 
     return (
@@ -56,19 +57,37 @@ export default function PaginatedPuzzleTable({fetchPuzzles, setPuzzles, puzzles}
                 </TableBody>
             </Table>
             <div className="flex justify-between items-center mt-4">
-                <Button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </Button>
+                <div className="flex space-x-2">
+                    <Button
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                        title="First Page"
+                    >
+                        <ChevronFirst className="h-4 w-4" />
+                    </Button>
+                    <Button
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </Button>
+                </div>
                 <span>Page {currentPage} of {totalPages}</span>
-                <Button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </Button>
+                <div className="flex space-x-2">
+                    <Button
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </Button>
+                    <Button
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages}
+                        title="Last Page"
+                    >
+                        <ChevronLast className="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
         </div>
     )
