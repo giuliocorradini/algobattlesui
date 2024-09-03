@@ -2,12 +2,12 @@ import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { FetchPublishedPuzzles } from "../../lib/api/publisher"
 import { useState } from "react";
 
-export default function PublishedPuzzleTable({token}) {
+export default function PublishedPuzzleTable({token, openCallback}) {
     function fetchPuzzles(page) {
         return FetchPublishedPuzzles(token, page)
     }
 
     const [puzzles, setPuzzles] = useState([]);
     
-    return <PaginatedPuzzleTable fetchPuzzles={fetchPuzzles} puzzles={puzzles} setPuzzles={setPuzzles}></PaginatedPuzzleTable>
+    return <PaginatedPuzzleTable fetchPuzzles={fetchPuzzles} puzzles={puzzles} setPuzzles={setPuzzles} openCallback={openCallback}></PaginatedPuzzleTable>
 }

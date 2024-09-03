@@ -90,3 +90,75 @@ export function CreatePuzzleDialog(params) {
     {...params}
   />
 }
+
+export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton, values}) {
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        
+      </DialogTrigger>
+      <DialogContent className="md:max-w-[1000px]">
+        <DialogHeader>
+          <DialogTitle>Add New Puzzle</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <FormField id="title" name="title" maxLength={150} required {...errs("title")} defaultValue={values.title} />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="difficulty">Difficulty</Label>
+            <Select name="difficulty" defaultValue={values.difficulty}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="E" default>Easy</SelectItem>
+                <SelectItem value="M">Medium</SelectItem>
+                <SelectItem value="H">Hard</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <ErrorTextArea id="description" name="description" {...errs("description")} defaultValue={values.description} />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="timeConstraint">Time Constraint (μs)</Label>
+            <FormField id="timeConstraint" name="timeConstraint" type="number" {...errs("time_constraint")} defaultValue={values.time_constraint} />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="memoryConstraint">Memory Constraint</Label>
+            <FormField id="memoryConstraint" name="memoryConstraint" type="number"  {...errs("memory_constraint")} defaultValue={values.memory_constraint} />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="visibility">Visibility</Label>
+            <Select name="visibility" defaultValue={values.visibility}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="P">Public</SelectItem>
+                <SelectItem value="H">Hidden</SelectItem>
+                <SelectItem value="R">Private</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="categories">Categories (comma-separated)</Label>
+            <FormField id="categories" name="categories" placeholder="e.g. Arrays, Strings, Dynamic Programming" {...errs("categories")}
+            defaultValue={values.categories ? values.categories.join(", ") : ""} />
+          </div>
+                    
+          <Button type="submit">Publish</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

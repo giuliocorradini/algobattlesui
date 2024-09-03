@@ -17,9 +17,9 @@ import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
 import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { SearchBar, SearchResults } from "../../components/search"
-import { PublishPuzzle, SearchPublishedPuzzles } from "../../lib/api/publisher"
+import { EditPuzzle, PublisherDetailPuzzle, PublishPuzzle, SearchPublishedPuzzles } from "../../lib/api/publisher"
 import PublishedPuzzleTable from "./publishedPuzzles"
-import { CreatePuzzleDialog } from "./puzzleDialog"
+import PuzzleDialog, { CreatePuzzleDialog, EditPuzzleDialog } from "./puzzleDialog"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -68,6 +68,11 @@ export default function PublisherPage() {
 
         if (!user.is_publisher)
             navigate("/")
+
+        if (actionParam.has("add")) {
+            setOpenCreationDialog(true)
+            setActionParam({})
+        }
     }, [])
 
     // Form validation
@@ -102,8 +107,48 @@ export default function PublisherPage() {
                     description: `The puzzle was created. ID: ${response.data.id}.`
                 })
 
-                setUser(response.data)
                 setOpenCreationDialog(false)
+            })
+            .catch(({response: {data}}) => {
+                setErrors(data)
+            })
+    }
+
+    const [openEditDialog, setOpenEditDialog] = useState(false)
+    const [currentPuzzle, setCurrentPuzzle] = useState({})
+
+    function FetchPuzzleAndOpen(pk) {
+        PublisherDetailPuzzle(auth.token, pk)
+        .then(response => {
+            setCurrentPuzzle(response.data)
+            setOpenEditDialog(true)
+        })
+        .catch(err => {})
+    }
+
+    function handleEditSubmit(evt) {
+        evt.preventDefault()
+
+        const formData = evt.target;
+        const requestData = {
+            title: formData.title.value,
+            difficulty: formData.difficulty.value,
+            description: formData.description.value,
+            time_constraint: parseInt(formData.timeConstraint.value, 10),
+            memory_constraint: parseInt(formData.memoryConstraint.value, 10),
+            visibility: formData.visibility.value,
+            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== '')
+        };
+
+        
+        EditPuzzle(auth.token, currentPuzzle.id, requestData)
+            .then(response => {
+                toast({
+                    title: "Edited",
+                    description: `The puzzle with ID ${response.data.id} was correctly edited.`
+                })
+
+                setOpenEditDialog(false)
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -134,8 +179,8 @@ export default function PublisherPage() {
 
                                 {
                                     searchResults != undefined ?
-                                    <PaginatedPuzzleTable puzzles={searchResults} setPuzzles={setSearchResults} fetchPuzzles={(page) => SearchPublishedPuzzles(auth.token, page, query)} /> :
-                                    <PublishedPuzzleTable token={auth.token}></PublishedPuzzleTable>
+                                    <PaginatedPuzzleTable puzzles={searchResults} setPuzzles={setSearchResults} fetchPuzzles={(page) => SearchPublishedPuzzles(auth.token, page, query)} openCallback={FetchPuzzleAndOpen}/> :
+                                    <PublishedPuzzleTable token={auth.token} openCallback={FetchPuzzleAndOpen}></PublishedPuzzleTable>
                                 }
 
                             </CardContent>
@@ -149,6 +194,7 @@ export default function PublisherPage() {
 
             <Toaster></Toaster>
             <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} />
+            <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} />
         </div>
     )
 }

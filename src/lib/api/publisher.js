@@ -19,3 +19,16 @@ export function PublishPuzzle(token, data) {
         headers: { Authorization: `Token ${token}` }
     })
 }
+
+
+export function PublisherDetailPuzzle(token, pk) {
+    return client.get(`/publisher/${pk}`, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}
+
+export function EditPuzzle(token, pk, data) {
+    return client.put(`/publisher/${pk}`, data, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}
