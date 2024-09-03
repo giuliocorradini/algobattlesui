@@ -319,7 +319,7 @@ export default function EditorPage({multiplayer}) {
         </div> : <></>}
         <div className="flex items-center gap-4">
           <CompletionStatus  attempts={attempts}/>
-          <LanguageSelector supportedLanguages={["C", "C++", "Java"]} language={language} setLanguage={setLanguage}></LanguageSelector>
+          <LanguageSelector supportedLanguages={["C", "C++"]} language={language} setLanguage={setLanguage}></LanguageSelector>
           <Button onClick={sendAttempt} disabled={multiplayer && !challengeOngoing}>Build</Button>
           <AttemptsDrawer attempts={attempts}></AttemptsDrawer>
           <AccountButton username={user.username} email={user.email} picture={user.picture}></AccountButton>
