@@ -59,13 +59,13 @@ function Actions({ isLogged, isPublisher }) {
   if (!isLogged)
     return <></>
 
-  return [
-    <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>,
-    (isPublisher ?
+  return <div>
+    <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>
+    {isPublisher ?
       <PublisherActions></PublisherActions> :
       <LoggedInActions></LoggedInActions>
-    )
-  ]
+    }
+  </div>
 }
 
 function CategoryElement({ name, link }) {

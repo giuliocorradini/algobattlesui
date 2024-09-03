@@ -4,18 +4,19 @@ import { SearchPuzzle } from "../lib/api/search"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "./ui/table"
 import { Button } from "./ui/button"
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react"
-import { Badge } from "@radix-ui/themes"
+import { Badge } from "./ui/badge"
 import { cn } from "../lib/utils"
 
-export function SearchBar({ setResults, className }) {
+export function SearchBar({ setResults, className, searchCallback }) {
     const [query, setQuery] = useState("")
+    const searchFetch = searchCallback ? searchCallback : SearchPuzzle
 
     function performSearch() {
         if (query == "")
             setResults(null)
 
         else
-            SearchPuzzle(query)
+            searchFetch(query)
                 .then(response => {
                     setResults(response.data.results)
                 })

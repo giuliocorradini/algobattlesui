@@ -16,6 +16,8 @@ import { useToast } from "../../components/ui/use-toast"
 import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
 import PaginatedPuzzleTable from "./paginatedPuzzleTable"
+import { SearchBar, SearchResults } from "../../components/search"
+import { SearchPublishedPuzzles } from "../../lib/api/publisher"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -162,6 +164,8 @@ export default function PublisherPage() {
             })
     }
 
+    const [searchResults, setSearchResults] = useState(null)
+
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
             <Header user={user}></Header>
@@ -171,103 +175,22 @@ export default function PublisherPage() {
                     </StickyPageNavigation>
                     <div className="grid gap-6">
 
-                    <Card id="published">
+                        <Card id="published">
                             <CardHeader>
                                 <CardTitle>Published problems</CardTitle>
                             </CardHeader>
-                            
-                                <CardContent className="grid gap-6">
+                            <CardContent className="grid gap-6">
+                                <SearchBar setResults={setSearchResults} searchCallback={(query) => SearchPublishedPuzzles(auth.token, 1, query)}></SearchBar>
+                                {
+                                    searchResults ?
+                                    <SearchResults results={searchResults}/> :
                                     <PaginatedPuzzleTable token={auth.token}></PaginatedPuzzleTable>
-                                </CardContent>
-                            
+                                }
+                            </CardContent>
                         </Card>
 
-                        <Card id="profile">
-                            <CardHeader>
-                                <CardTitle>Profile</CardTitle>
-                            </CardHeader>
-                            <form onSubmit={handleSubmit}>
-                                <CardContent className="grid gap-6">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="username">Username</Label>
-                                        <NonBlankInput id="username" defaultValue={user.username} {...errs("username")} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <NonBlankInput id="email" type="email" defaultValue={user.email} {...errs("email")}/>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="firstName">First Name</Label>
-                                            <Input id="first_name" defaultValue={user.first_name} />
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="lastName">Last Name</Label>
-                                            <Input id="last_name" defaultValue={user.last_name} />
-                                        </div>
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="address">Github Profile</Label>
-                                        <Input id="github" defaultValue={user.github} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="address">Linkedin</Label>
-                                        <Input id="linkedin" defaultValue={user.linkedin} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Button size="sm">Update</Button>
-                                    </div>
-                                </CardContent>
-                            </form>
-                        </Card>
-                        <Card id="picture">
-                            <CardHeader>
-                                <CardTitle>Edit Picture</CardTitle>
-                            </CardHeader>
-                            <form method="post" type="multipart" onSubmit={handlePictureSubmit}>
-                                <CardContent className="grid gap-6">
-                                    <div className="grid gap-2">
-                                        <Label>Current</Label>
-                                        <div className="flex items-center gap-4">
-                                            <Avatar className="h-16 w-16">
-                                                <AvatarImage src={user.picture} />
-                                            </Avatar>
-                                        </div>
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label>Select a new picture</Label>
-                                        <div className="flex items-center gap-4">
-                                            <ErrorInput type="file" accept="image/*" onChange={e => setImage(e.target.files[0])} {...errs("picture")} />
-                                            <Button type="submit">Upload</Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </form>
-                        </Card>
-                        <Card id="password">
-                            <CardHeader>
-                                <CardTitle>Password</CardTitle>
-                            </CardHeader>
-                            <form onSubmit={handlePasswordSubmit}>
-                                <CardContent className="grid gap-6">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="old_password">Old password</Label>
-                                        <NonBlankInput id="old_password" name="old_password" type="password" {...errs("old_password")} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="new_password">New password</Label>
-                                        <NonBlankInput id="new_password" name="new_password" type="password" {...errs("new_password")} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="new_password_check">Repeat new password</Label>
-                                        <NonBlankInput id="new_password_check" name="new_password_check" type="password" {...errs("new_password_check")} />
-                                    </div>
-                                </CardContent>
-                                <CardContent className="grid gap-6">
-                                    <Button type="submit" variant="destructive">Change password</Button>
-                                </CardContent>
-                            </form>
-                        </Card>
+                        
+
                     </div>
                 </div>
             </main>
