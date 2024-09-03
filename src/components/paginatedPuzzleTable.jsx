@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
-import { FetchPublishedPuzzles } from '../lib/api/publisher'
 
 
-export default function PaginatedPuzzleTable({fetchPuzzles}) {
-    const [puzzles, setPuzzles] = useState([])
+export default function PaginatedPuzzleTable({fetchPuzzles, setPuzzles, puzzles}) {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
 
@@ -38,7 +36,7 @@ export default function PaginatedPuzzleTable({fetchPuzzles}) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {puzzles.map((puzzle) => (
+                    {puzzles ? puzzles.map((puzzle) => (
                         <TableRow key={puzzle.id}>
                             <TableCell>{puzzle.title}</TableCell>
                             <TableCell>
@@ -54,7 +52,7 @@ export default function PaginatedPuzzleTable({fetchPuzzles}) {
                                 </div>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )) : null}
                 </TableBody>
             </Table>
             <div className="flex justify-between items-center mt-4">

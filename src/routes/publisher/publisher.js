@@ -166,6 +166,7 @@ export default function PublisherPage() {
     }
 
     const [searchResults, setSearchResults] = useState(null)
+    const [query, setQuery] = useState("")
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
@@ -181,12 +182,17 @@ export default function PublisherPage() {
                                 <CardTitle>Published problems</CardTitle>
                             </CardHeader>
                             <CardContent className="grid gap-6">
-                                <SearchBar setResults={setSearchResults} searchCallback={(query) => SearchPublishedPuzzles(auth.token, 1, query)}></SearchBar>
+                                <SearchBar setResults={setSearchResults} searchCallback={(q) => {
+                                    setQuery(q)
+                                    return SearchPublishedPuzzles(auth.token, 1, q)
+                                }}></SearchBar>
+
                                 {
-                                    searchResults ?
-                                    <SearchResults results={searchResults}/> :
+                                    searchResults != undefined ?
+                                    <PaginatedPuzzleTable puzzles={searchResults} setPuzzles={setSearchResults} fetchPuzzles={(page) => SearchPublishedPuzzles(auth.token, page, query)} /> :
                                     <PublishedPuzzleTable token={auth.token}></PublishedPuzzleTable>
                                 }
+
                             </CardContent>
                         </Card>
 
