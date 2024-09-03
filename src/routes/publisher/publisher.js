@@ -15,9 +15,10 @@ import { ErrorInput, NonBlankInput } from "../../components/errorfield"
 import { useToast } from "../../components/ui/use-toast"
 import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
-import PaginatedPuzzleTable from "./paginatedPuzzleTable"
+import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { SearchBar, SearchResults } from "../../components/search"
 import { SearchPublishedPuzzles } from "../../lib/api/publisher"
+import PublishedPuzzleTable from "./publishedPuzzles"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -184,7 +185,7 @@ export default function PublisherPage() {
                                 {
                                     searchResults ?
                                     <SearchResults results={searchResults}/> :
-                                    <PaginatedPuzzleTable token={auth.token}></PaginatedPuzzleTable>
+                                    <PublishedPuzzleTable token={auth.token}></PublishedPuzzleTable>
                                 }
                             </CardContent>
                         </Card>

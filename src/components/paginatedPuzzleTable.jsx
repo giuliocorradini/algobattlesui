@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
-import { Button } from "../../components/ui/button"
-import { Badge } from "../../components/ui/badge"
-import { FetchPublishedPuzzles } from '../../lib/api/publisher'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
+import { Button } from "./ui/button"
+import { Badge } from "./ui/badge"
+import { FetchPublishedPuzzles } from '../lib/api/publisher'
 
 
-export default function PaginatedPuzzleTable({token}) {
+export default function PaginatedPuzzleTable({fetchPuzzles}) {
     const [puzzles, setPuzzles] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
 
-
-    function fetchPuzzles(page) {
-        FetchPublishedPuzzles(token, page)
+    useEffect(() => {
+        fetchPuzzles(currentPage)
         .then(response => {
             const {results, count} = response.data
 
@@ -20,12 +19,7 @@ export default function PaginatedPuzzleTable({token}) {
             setTotalPages(Math.ceil(count / results.length))
         })
         .catch(err => {})
-    }
-
-    useEffect(() => {
-        fetchPuzzles(currentPage)
     }, [currentPage])
-
 
     const DifficultyLUTs = {
         E: {color: 'bg-green-500', label: "Easy"},
