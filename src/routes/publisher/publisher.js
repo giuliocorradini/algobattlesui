@@ -5,7 +5,7 @@ import { Label } from "../../components/ui/label"
 import { Input } from "../../components/ui/input"
 import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar"
 import { Switch } from "../../components/ui/switch"
-import { Form, Link, useNavigate } from "react-router-dom"
+import { Form, Link, useNavigate, useSearchParams } from "react-router-dom"
 import { SwordsIcon } from "lucide-react"
 import { AccountButton } from "../../components/accountbutton"
 import { useContext, useEffect, useState } from "react"
@@ -14,6 +14,7 @@ import { UpdatePassword, UpdateUserInfo, UploadPicture } from "../../lib/api/use
 import { ErrorInput, NonBlankInput } from "../../components/errorfield"
 import { useToast } from "../../components/ui/use-toast"
 import { Toaster } from "../../components/ui/toaster"
+import NewProblemButton from "./newProblemButton"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -37,14 +38,14 @@ function StickyPageNavigation({title, children}) {
         return ""
     }
 
-    return <div className="md:sticky top-10">
+    return <div className="md:sticky top-16">
         <nav className="text-sm text-muted-foreground grid gap-4">
             <div className="max-w-6xl w-full mx-auto text-primary">
                 <h1 className="font-semibold text-3xl">{title}</h1>
             </div>
-            {children.map(
+            {children ? children.map(
                 (child, i) => {return React.cloneElement(child, {onClick: () => setActive(i), key: i, className: activeCn(i)})}
-            )}
+            ) : <></>}
         </nav>
     </div>
 }
@@ -53,15 +54,18 @@ export default function PublisherPage() {
     const auth = useContext(AuthenticationContext)
     const {user, setUser} = useContext(CurrentUserContext)
     const navigate = useNavigate()
-    const initials = user.username ? user.username.substring(0, 2) : ""
-
     const {toast} = useToast()
+    const [actionParam, setActionParam] = useSearchParams()
 
     useEffect(() => {
         if (!auth.isLogged)
             navigate("/login")
+
+        if (!user.is_publisher)
+            navigate("/")
     }, [])
 
+    // Form validation
     const [errors, setErrors] = useState({})
     const hasErrors = (field) => field in errors
     const errorFor = (field) => errors[field]
@@ -162,16 +166,7 @@ export default function PublisherPage() {
             <Header user={user}></Header>
             <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
                 <div className="grid md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr] items-start gap-6 max-w-6xl w-full mx-auto">
-                    <StickyPageNavigation title="Settings">
-                        <a href="#profile" >
-                            Profile
-                        </a>
-                        <a href="#picture">
-                            Picture
-                        </a>
-                        <a href="#password">
-                            Password
-                        </a>
+                    <StickyPageNavigation title="Puzzle editor">
                     </StickyPageNavigation>
                     <div className="grid gap-6">
                         <Card id="profile">
@@ -223,7 +218,6 @@ export default function PublisherPage() {
                                         <div className="flex items-center gap-4">
                                             <Avatar className="h-16 w-16">
                                                 <AvatarImage src={user.picture} />
-                                                <AvatarFallback>{initials}</AvatarFallback>
                                             </Avatar>
                                         </div>
                                     </div>
@@ -266,6 +260,7 @@ export default function PublisherPage() {
             </main>
 
             <Toaster></Toaster>
+            <NewProblemButton onClick={() => {}}/>
         </div>
     )
 }
