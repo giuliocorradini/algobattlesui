@@ -168,6 +168,17 @@ export default function EditorPage({multiplayer}) {
   }
 
   useEffect(() => {
+    if (user.is_publisher) {
+      navigate("/")
+      toast({
+        title: "Unauthorized",
+        description: "You can't use the editor and submit solutions if you are using a publisher account",
+        variant: "destructive"
+      })
+      return
+    }
+
+
     getPuzzle(pk).then(response => {
       setProblemDescription(response.data)
     })

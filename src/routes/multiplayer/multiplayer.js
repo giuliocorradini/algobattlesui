@@ -85,6 +85,17 @@ export default function MultiplayerPage() {
 
     // Setup
     useEffect(() => {
+        if (user.is_publisher) {
+            navigate("/")
+            toast({
+              title: "Unauthorized",
+              description: "You can't attend multiplayer when using a publisher account",
+              variant: "destructive"
+            })
+            return
+        }
+      
+
         if (isLogged)
             connectWs()
         else
