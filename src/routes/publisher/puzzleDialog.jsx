@@ -6,6 +6,8 @@ import { Textarea } from "../../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Label } from "../../components/ui/label";
 import NewProblemButton from './newProblemButton';
+import { FormField } from '../../components/formfield';
+import { ErrorTextArea } from '../../components/errorTextArea';
 
 /**
  * Dialog to create/edit a puzzle. Handles form data internally and passes to handleSubmit.
@@ -24,7 +26,7 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" maxLength={150} required />
+            <FormField id="title" name="title" maxLength={150} required {...errs("title")} />
           </div>
           
           <div className="space-y-2">
@@ -43,17 +45,17 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
           
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" name="description"  required />
+            <ErrorTextArea id="description" name="description" {...errs("description")} />
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="timeConstraint">Time Constraint (μs)</Label>
-            <Input id="timeConstraint" name="timeConstraint" type="number"  required />
+            <FormField id="timeConstraint" name="timeConstraint" type="number" {...errs("time_constraint")} />
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="memoryConstraint">Memory Constraint</Label>
-            <Input id="memoryConstraint" name="memoryConstraint" type="number"  required />
+            <FormField id="memoryConstraint" name="memoryConstraint" type="number"  {...errs("memory_constraint")} />
           </div>
           
           <div className="space-y-2">
@@ -72,7 +74,7 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
 
           <div className="space-y-2">
             <Label htmlFor="categories">Categories (comma-separated)</Label>
-            <Input id="categories" name="categories" placeholder="e.g. Arrays, Strings, Dynamic Programming" />
+            <FormField id="categories" name="categories" placeholder="e.g. Arrays, Strings, Dynamic Programming" {...errs("categories")} />
           </div>
                     
           <Button type="submit">Publish</Button>

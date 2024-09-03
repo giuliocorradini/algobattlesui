@@ -99,7 +99,7 @@ export default function PublisherPage() {
             .then(response => {
                 toast({
                     title: "Created",
-                    description: `The problem was created. ID: ${response.data.id}.`
+                    description: `The puzzle was created. ID: ${response.data.id}.`
                 })
 
                 setUser(response.data)
