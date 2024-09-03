@@ -15,6 +15,7 @@ import { ErrorInput, NonBlankInput } from "../../components/errorfield"
 import { useToast } from "../../components/ui/use-toast"
 import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
+import PaginatedPuzzleTable from "./paginatedPuzzleTable"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -169,6 +170,18 @@ export default function PublisherPage() {
                     <StickyPageNavigation title="Puzzle editor">
                     </StickyPageNavigation>
                     <div className="grid gap-6">
+
+                    <Card id="published">
+                            <CardHeader>
+                                <CardTitle>Published problems</CardTitle>
+                            </CardHeader>
+                            
+                                <CardContent className="grid gap-6">
+                                    <PaginatedPuzzleTable token={auth.token}></PaginatedPuzzleTable>
+                                </CardContent>
+                            
+                        </Card>
+
                         <Card id="profile">
                             <CardHeader>
                                 <CardTitle>Profile</CardTitle>
