@@ -14,7 +14,7 @@ export default function PaginatedPuzzleTable({fetchPuzzles, setPuzzles, puzzles}
             const {results, count} = response.data
 
             setPuzzles(results)
-            setTotalPages(Math.ceil(count / results.length))
+            setTotalPages(Math.ceil(count / 10))
         })
         .catch(err => {})
     }, [currentPage])
