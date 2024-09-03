@@ -13,3 +13,9 @@ export function SearchPublishedPuzzles(token, pageNumber, terms) {
         headers: {Authorization: `Token ${token}`}
     })
 }
+
+export function PublishPuzzle(token, data) {
+    return client.post("/publisher/create", data, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}

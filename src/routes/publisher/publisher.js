@@ -17,8 +17,9 @@ import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
 import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { SearchBar, SearchResults } from "../../components/search"
-import { SearchPublishedPuzzles } from "../../lib/api/publisher"
+import { PublishPuzzle, SearchPublishedPuzzles } from "../../lib/api/publisher"
 import PublishedPuzzleTable from "./publishedPuzzles"
+import { CreatePuzzleDialog } from "./puzzleDialog"
 
 function Header({user}) {
     return <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-white px-4 md:px-6">
@@ -78,24 +79,26 @@ export default function PublisherPage() {
         errorLabel: errorFor(field)
     }}
 
-    function handleSubmit(evt) {
+    function handleCreationSubmit(evt) {
         evt.preventDefault()
 
         const formData = evt.target;
         const requestData = {
-            username: formData.username.value,
-            email: formData.email.value,
-            first_name: formData.first_name.value,
-            last_name: formData.last_name.value,
-            github: formData.github.value,
-            linkedin: formData.linkedin.value
-        }
+            title: formData.title.value,
+            difficulty: formData.difficulty.value,
+            description: formData.description.value,
+            time_constraint: parseInt(formData.timeConstraint.value, 10),
+            memory_constraint: parseInt(formData.memoryConstraint.value, 10),
+            visibility: formData.visibility.value,
+            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== '')
+        };
 
-        UpdateUserInfo(auth.token, requestData)
+        
+        PublishPuzzle(auth.token, requestData)
             .then(response => {
                 toast({
-                    title: "Successful update",
-                    description: "Your user information was updated successfully."
+                    title: "Created",
+                    description: `The problem was created. ID: ${response.data.id}.`
                 })
 
                 setUser(response.data)
@@ -203,7 +206,7 @@ export default function PublisherPage() {
             </main>
 
             <Toaster></Toaster>
-            <NewProblemButton onClick={() => {}}/>
+            <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} />
         </div>
     )
 }
