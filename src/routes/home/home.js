@@ -14,7 +14,7 @@ function LoggedInActions() {
   const navigate = useNavigate()
   //TODO: recently played
   return <>
-    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left">
+    <Button variant="ghost" className="justify-start gap-2 px-3 py-2 text-left" onClick={() => { navigate("/recent") }}>
       <BookmarkIcon className="h-4 w-4" />
       <span>Recently played</span>
     </Button>

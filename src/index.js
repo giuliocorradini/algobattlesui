@@ -21,11 +21,16 @@ import MultiplayerPage from './routes/multiplayer/multiplayer';
 import { MultiplayerWebsocketProvider } from './routes/multiplayer/websocket';
 import { ChallengeContextProvider } from './routes/multiplayer/challengecontext';
 import PublisherPage from './routes/publisher/publisher';
+import RecentlyPlayedPage from './routes/home/recent';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
+  },
+  {
+    path: "/recent",
+    element: <RecentlyPlayedPage />,
   },
   {
     path: "/editor/:pk",

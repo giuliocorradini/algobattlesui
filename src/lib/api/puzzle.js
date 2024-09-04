@@ -47,3 +47,15 @@ export function getPreviousAttemptsMultiplayer(pk, token, challengeId) {
         headers: {Authorization: `Token ${token}`}
     })
 }
+
+export function FetchRecentlyPlayed(token) {
+    return client.get(`/puzzle/attempted/`, {
+        headers: {Authorization: `Token ${token}`}
+    })
+}
+
+export function FetchCompleted(token) {
+    return client.get(`/puzzle/completed/`, {
+        headers: {Authorization: `Token ${token}`}
+    })
+}
