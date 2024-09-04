@@ -12,23 +12,28 @@ import { Checkbox } from '../../components/ui/checkbox';
 
 
 function TestRow({ index, test, deleteTest, updateTest }) {
-  return <div key={index} className="flex items-start space-x-4">
-    <div className="space-y-2 flex-1">
-      <Label htmlFor={`test-${index}-input`}>Input</Label>
-      <Textarea id={`test-${index}-input`} value={test.input} onChange={(e) => updateTest(index, 'input', e.target.value)} />
+  return <div key={index}>
+    <h2 className="text-l font-semibold">Test {index}</h2>
+    <div className="flex items-start space-x-4">
+      <div className="space-y-2 flex-1">
+        <Label htmlFor={`test-${index}-input`}>Input</Label>
+        <Textarea id={`test-${index}-input`} value={test.input} onChange={(e) => updateTest(index, 'input', e.target.value)} />
+      </div>
+      <div className="space-y-2 flex-1">
+        <Label htmlFor={`test-${index}-output`}>Output</Label>
+        <Textarea id={`test-${index}-output`} value={test.output} onChange={(e) => updateTest(index, 'output', e.target.value)} />
+      </div>
     </div>
-    <div className="space-y-2 flex-1">
-      <Label htmlFor={`test-${index}-output`}>Output</Label>
-      <Textarea id={`test-${index}-output`} value={test.output} onChange={(e) => updateTest(index, 'output', e.target.value)} />
-    </div>
-    <div className="space-y-2 flex items-end">
-      <Label htmlFor={`test-${index}-private`}>Private</Label>
-      <Checkbox id={`test-${index}-private`} checked={test.is_private} onCheckedChange={(checked) => updateTest(index, 'is_private', checked)} />
-    </div>
-    <div className="space-y-2 flex items-end">
-      <Button onClick={(evt) => {evt.preventDefault(); deleteTest(index)}}>
-        <TrashIcon className="h-6 w-6 stroke-2" />
-      </Button>
+    <div className="flex items-start space-x-4 mt-4 justify-end">
+      <div className="space-y-2 items-end">
+        <Label htmlFor={`test-${index}-private`}>Private </Label>
+        <Checkbox id={`test-${index}-private`} checked={test.is_private} onCheckedChange={(checked) => updateTest(index, 'is_private', checked)} />
+      </div>
+      <div className="space-y-2 flex items-end">
+        <Button onClick={(evt) => { evt.preventDefault(); deleteTest(index) }} variant="outline" size="icon">
+          <TrashIcon className="h-6 w-6 stroke-2" />
+        </Button>
+      </div>
     </div>
   </div>
 }
