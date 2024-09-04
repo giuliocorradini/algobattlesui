@@ -243,7 +243,7 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
             <Button onClick={(evt) => {evt.preventDefault(); addTest()}} variant="outline">
               Add test row
             </Button>
-            <Button type="submit">Publish</Button>
+            <Button type="submit">Update</Button>
             <Button variant="destructive" onClick={(evt) => {evt.preventDefault(); deletePuzzle()}}>Delete</Button>
           </div>
         </form>

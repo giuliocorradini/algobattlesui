@@ -166,6 +166,7 @@ export default function PublisherPage() {
                 setOpenEditDialog(false)
                 setErrors({})
                 setForceUpdate(true)
+                setTests([])
             })
             .catch(({response: {data}}) => {
                 setErrors(data)

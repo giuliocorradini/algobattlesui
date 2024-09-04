@@ -47,10 +47,12 @@ function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
     else
       return <>
         <p>
-          For <code>{example.input}</code>
+          For:
+          <br/><code>{example.input}</code>
         </p>
         <p>
-          the output should be <code>{example.output}</code>
+          the expected output is:
+          <br/><code>{example.output}</code>
         </p>
       </>
   }
@@ -62,10 +64,10 @@ function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
         {description}
       </p>
 
-      <h3>Example</h3>
+      <h3 className="mt-4">Example</h3>
       <Example />
 
-      <h3>Constraints</h3>
+      <h3 className="mt-4">Constraints</h3>
       <p>
         Memory <code>{mem}</code>
       </p>
