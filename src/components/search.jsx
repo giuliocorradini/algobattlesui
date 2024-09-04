@@ -43,7 +43,7 @@ export function SearchBar({ setResults, className, searchCallback }) {
 
 
 export function SearchResults({ results, openProblem }) {
-    const [sortColumn, setSortColumn] = useState("title")
+    const [sortColumn, setSortColumn] = useState("")
     const [sortDirection, setSortDirection] = useState("asc")
 
     const difficulty = {
@@ -57,10 +57,12 @@ export function SearchResults({ results, openProblem }) {
             return sortDirection === 'asc'
                 ? a.title.localeCompare(b.title)
                 : b.title.localeCompare(a.title)
-        } else {
+        } else if (sortColumn === 'difficulty') {
             return sortDirection === 'asc'
                 ? difficulty[a.difficulty].value - difficulty[b.difficulty].value
                 : difficulty[b.difficulty].value - difficulty[a.difficulty].value
+        } else {
+            return true
         }
     })
 
@@ -71,6 +73,9 @@ export function SearchResults({ results, openProblem }) {
 
     function toggleSort(column) {
         if (sortColumn === column) {
+            if (sortDirection === "desc")
+                setSortColumn("")
+                setSortDirection("asc")
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
         } else {
             setSortColumn(column)
