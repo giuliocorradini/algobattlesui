@@ -85,7 +85,7 @@ export function SearchResults({ results, openProblem }) {
 
     return (
         <div>
-            <h2 className="text-xl font-medium mb-4">Results</h2>
+            <div className="mt-4 px-2 text-xl font-medium text-muted-foreground">Search results</div>
 
             {results.length == 0 ? <div>
                 <p>No results</p>

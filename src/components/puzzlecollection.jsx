@@ -10,25 +10,36 @@ export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, pr
         H: "bg-red-500",
     }
 
+    const categoriesLimit = 2
+
     return (
-        <Card className="w-full max-w-sm h-[300px] flex flex-col justify-between">
-            <CardHeader>
-                <CardTitle className="text-center">{title}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow flex flex-col items-center gap-4">
-                <Badge className={`${difficultyColors[difficulty]} text-white`}>
+        <Card className="w-full max-w-sm h-full min-h-[200px] min-w-[500px] flex flex-col justify-between">
+            <CardHeader className="flex flex-col items-center">
+                <Badge className={`${difficultyColors[difficulty]} text-white mb-2`}>
                     {difficulty}
                 </Badge>
-                <Button onClick={() => problemCallback(pk)}>Open</Button>
-                <div className="flex flex-wrap justify-center gap-2">
+                <CardTitle className="text-center">{title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+            <div className="flex flex-wrap justify-center gap-2">
                     {categories.map((category, index) => (
+
+                            index < categoriesLimit ? 
                         <Badge key={index} variant="outline">
                             {category}
-                        </Badge>
+                        </Badge> : <></>
+                        
                     ))}
+                    {
+                        categories.length > categoriesLimit ? <Badge variant="outline">...</Badge> : <></>
+                    }
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="flex flex-col">
+
+                <div className="justify-center">
+                    <Button onClick={() => problemCallback(pk)} variant="ghost" >Play</Button>
+                </div>
             </CardFooter>
         </Card>
     )

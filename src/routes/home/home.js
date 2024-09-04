@@ -60,7 +60,7 @@ function Actions({ isLogged, isPublisher }) {
     return <></>
 
   return <div>
-    <div className="mt-4 px-2 text-xs font-medium text-muted-foreground">Actions</div>
+    <div className="mt-4 px-2 text-xl font-medium text-muted-foreground">Quick actions</div>
     {isPublisher ?
       <PublisherActions></PublisherActions> :
       <LoggedInActions></LoggedInActions>
@@ -84,6 +84,24 @@ function HighlightedCategories({ categories }) {
   return categories.map((cat, i) => {
     return <CategoryElement {...cat} key={i}></CategoryElement>
   })
+}
+
+function JumboSection({isLogged, user}) {
+  return (
+    <div className="relative w-full h-64 bg-cover bg-center" style={{ backgroundImage: "url('/static/homepage_jumbo.png')" }}>
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="relative flex flex-col items-center justify-center h-full text-white">
+        <h1 className="text-4xl font-bold">Welcome {isLogged ? user.username : ""} to Algobattles!</h1>
+        <p className="mt-2 text-lg">Solve coding puzzles, and battle your friends.</p>
+        {
+          isLogged ? "Select a puzzle or use the search bar..." :
+            <Link to="/login">
+              <Button variant="primary" className="mt-4">Login</Button>
+            </Link>
+        }
+      </div>
+    </div>
+  );
 }
 
 export default function HomePage() {
@@ -120,7 +138,9 @@ export default function HomePage() {
   return <div className="flex flex-col h-screen">
     <Header user={user} setResults={setSearchResults} />
 
+    <JumboSection isLogged={isLogged} user={user}></JumboSection>
     <main className="mx-8">
+
       
       <Actions isLogged={isLogged} isPublisher={user.is_publisher}></Actions>
       {
@@ -128,6 +148,8 @@ export default function HomePage() {
       }
 
       <div className="mb-4">
+      <div className="mt-4 px-2 text-xl font-medium text-muted-foreground">Featured categories</div>
+      <div className="px-2 mb-2 text-s font-medium text-muted-foreground">A curated list of puzzles by the admins</div>
         {
           featuredProblems.map((c, i) => <PuzzleCollection
             collectionName={c.name} key={i}
