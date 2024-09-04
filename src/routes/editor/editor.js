@@ -212,6 +212,7 @@ export default function EditorPage({multiplayer}) {
     waitingResponse: false,
     attemptId: null
   })
+  const updateResponseStatus = (update) => setResponseStatus({waitingResponse, attemptId, ...update})
 
   function sendAttempt() {
     setResponseStatus({waitingResponse: false})
@@ -252,10 +253,8 @@ export default function EditorPage({multiplayer}) {
     pollAttempt(attemptId, token)
       .then(response => {
         if (response.data.passed == true) {
-          setLastAttempt({...lastAttempt, results: null})
-          setResponseStatus({
-            waitingResponse: false
-          })
+          setLastAttempt({ ...lastAttempt, results: null })
+          updateResponseStatus({waitingResponse: false})
 
           toast({
             title: "Tests passed",
@@ -269,9 +268,9 @@ export default function EditorPage({multiplayer}) {
           })
 
           setLastAttempt(response.data)
-          setResponseStatus({
-            waitingResponse: true
-          })
+          updateResponseStatus({ waitingResponse: false })
+        } else if (response.data.results == "") {
+          updateResponseStatus({ waitingResponse: true })
         }
 
         setAttempts(attempts.concat(response.data))
@@ -279,6 +278,8 @@ export default function EditorPage({multiplayer}) {
       .catch(err => {
         console.log()
       })
+
+      updateResponseStatus({ waitingResponse: false })
   }
 
   useEffect(() => {
