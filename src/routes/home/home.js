@@ -149,7 +149,7 @@ export default function HomePage() {
 
       <div className="mb-4">
       <div className="mt-4 px-2 text-xl font-medium text-muted-foreground">Featured categories</div>
-      <div className="px-2 mb-2 text-s font-medium text-muted-foreground">A curated list of puzzles by the admins</div>
+      <div className="px-2 mb-2 text-s font-medium text-muted-foreground">A curated list of puzzles from the most popular categories</div>
         {
           featuredProblems.map((c, i) => <PuzzleCollection
             collectionName={c.name} key={i}
