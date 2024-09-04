@@ -150,7 +150,8 @@ export default function PublisherPage() {
             time_constraint: parseInt(formData.timeConstraint.value, 10),
             memory_constraint: parseInt(formData.memoryConstraint.value, 10),
             visibility: formData.visibility.value,
-            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== '')
+            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== ''),
+            tests: tests
         };
 
         
