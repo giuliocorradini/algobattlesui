@@ -54,7 +54,7 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="memoryConstraint">Memory Constraint</Label>
+            <Label htmlFor="memoryConstraint">Memory Constraint (B)</Label>
             <FormField id="memoryConstraint" name="memoryConstraint" type="number"  {...errs("memory_constraint")} />
           </div>
           
@@ -132,7 +132,7 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="memoryConstraint">Memory Constraint</Label>
+            <Label htmlFor="memoryConstraint">Memory Constraint (B)</Label>
             <FormField id="memoryConstraint" name="memoryConstraint" type="number"  {...errs("memory_constraint")} defaultValue={values.memory_constraint} />
           </div>
           

@@ -108,6 +108,7 @@ export default function PublisherPage() {
                 })
 
                 setOpenCreationDialog(false)
+                setErrors({})
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -149,6 +150,7 @@ export default function PublisherPage() {
                 })
 
                 setOpenEditDialog(false)
+                setErrors({})
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
