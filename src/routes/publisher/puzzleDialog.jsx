@@ -9,6 +9,7 @@ import { FormField } from '../../components/formfield';
 import { ErrorTextArea } from '../../components/errorTextArea';
 import { TrashIcon } from 'lucide-react';
 import { Checkbox } from '../../components/ui/checkbox';
+import { ScrollArea } from '@radix-ui/themes';
 
 
 function TestRow({ index, test, deleteTest, updateTest }) {
@@ -143,7 +144,8 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
       <DialogTrigger asChild>
         
       </DialogTrigger>
-      <DialogContent className="md:max-w-[1000px]">
+      <DialogContent className="md:max-w-[1000px] h-full max-h-[96%]">
+        <ScrollArea className="overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Puzzle</DialogTitle>
         </DialogHeader>
@@ -209,12 +211,13 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
           }
           
           <div className="flex justify-end space-x-4">
-            <Button onClick={() => addTest()} variant="outline">
+            <Button onClick={(evt) => {evt.preventDefault(); addTest()}} variant="outline">
               Add test row
             </Button>
             <Button type="submit">Publish</Button>
           </div>
         </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
