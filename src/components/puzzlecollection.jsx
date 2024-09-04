@@ -10,7 +10,7 @@ export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, pr
         H: "bg-red-500",
     }
 
-    const categoriesLimit = 2
+    const categoriesLimit = 3
 
     return (
         <Card className="w-full max-w-sm h-full min-h-[200px] min-w-[500px] flex flex-col justify-between mb-4">
@@ -57,7 +57,7 @@ export default function PuzzleCollection({ collectionName, content, openProblem,
     const seeAllCallback = (seeAll == null) ? () => navigate(`/show?cat=${collectionName}`) : seeAll
 
     return <div className="w-full">
-        <h2 onClick={seeAllCallback} className="text-lg font-semibold pb-4">{collectionName}</h2>
+        <h2 className="text-lg font-semibold pb-4">{collectionName}</h2>
         <div className="flex flex-nowrap overflow-x-auto space-x-4">
 
             {content.map((p, i) => {
