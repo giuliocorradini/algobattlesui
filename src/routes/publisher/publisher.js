@@ -85,6 +85,8 @@ export default function PublisherPage() {
     }}
 
     const [openCreationDialog, setOpenCreationDialog] = useState(false)
+    const [forceUpdate, setForceUpdate] = useState(false)
+
     function handleCreationSubmit(evt) {
         evt.preventDefault()
 
@@ -109,6 +111,7 @@ export default function PublisherPage() {
 
                 setOpenCreationDialog(false)
                 setErrors({})
+                setForceUpdate(true)
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -151,6 +154,7 @@ export default function PublisherPage() {
 
                 setOpenEditDialog(false)
                 setErrors({})
+                setForceUpdate(true)
             })
             .catch(({response: {data}}) => {
                 setErrors(data)
@@ -182,7 +186,7 @@ export default function PublisherPage() {
                                 {
                                     searchResults != undefined ?
                                     <PaginatedPuzzleTable puzzles={searchResults} setPuzzles={setSearchResults} fetchPuzzles={(page) => SearchPublishedPuzzles(auth.token, page, query)} openCallback={FetchPuzzleAndOpen}/> :
-                                    <PublishedPuzzleTable token={auth.token} openCallback={FetchPuzzleAndOpen}></PublishedPuzzleTable>
+                                    <PublishedPuzzleTable token={auth.token} openCallback={FetchPuzzleAndOpen} forceUpdate={forceUpdate} setForceUpdate={setForceUpdate}></PublishedPuzzleTable>
                                 }
 
                             </CardContent>

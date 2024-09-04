@@ -5,7 +5,7 @@ import { Badge } from "./ui/badge"
 import { ChevronFirst, ChevronLast } from 'lucide-react'
 
 
-export default function PaginatedPuzzleTable({ fetchPuzzles, setPuzzles, puzzles, openCallback }) {
+export default function PaginatedPuzzleTable({ fetchPuzzles, setPuzzles, puzzles, openCallback, forceUpdate, setForceUpdate }) {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const callback = openCallback ? openCallback : () => {}
@@ -20,6 +20,20 @@ export default function PaginatedPuzzleTable({ fetchPuzzles, setPuzzles, puzzles
             })
             .catch(err => { })
     }, [currentPage])
+
+    useEffect(() => {
+        if (forceUpdate) {
+            fetchPuzzles(1)
+                .then(response => {
+                    const { results, count } = response.data
+
+                    setPuzzles(results)
+                    setTotalPages(Math.ceil(count / 10))
+                })
+                .catch(err => { })
+                setForceUpdate(false)
+        }
+    }, [forceUpdate])
 
     const DifficultyLUTs = {
         E: { color: 'bg-green-500', label: "Easy" },
