@@ -13,7 +13,7 @@ export function PuzzleCollectionCard({ title, difficulty, categories, id: pk, pr
     const categoriesLimit = 2
 
     return (
-        <Card className="w-full max-w-sm h-full min-h-[200px] min-w-[500px] flex flex-col justify-between">
+        <Card className="w-full max-w-sm h-full min-h-[200px] min-w-[500px] flex flex-col justify-between mb-4">
             <CardHeader className="flex flex-col items-center">
                 <Badge className={`${difficultyColors[difficulty]} text-white mb-2`}>
                     {difficulty}
