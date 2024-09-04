@@ -38,3 +38,9 @@ export function EditPuzzle(token, pk, data) {
         headers: { Authorization: `Token ${token}` }
     })
 }
+
+export function DeletePuzzle(token, pk) {
+    return client.delete(`/publisher/${pk}`, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}

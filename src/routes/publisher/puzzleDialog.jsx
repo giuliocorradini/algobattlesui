@@ -150,7 +150,7 @@ export function CreatePuzzleDialog(params) {
   />
 }
 
-export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton, values, tests, setTests}) {
+export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton, values, tests, setTests, deletePuzzle}) {
   const addTest = () => {
     setTests([...tests, { input: '', output: '', is_private: true }]);
   };
@@ -244,6 +244,7 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
               Add test row
             </Button>
             <Button type="submit">Publish</Button>
+            <Button variant="destructive" onClick={(evt) => {evt.preventDefault(); deletePuzzle()}}>Delete</Button>
           </div>
         </form>
         </ScrollArea>

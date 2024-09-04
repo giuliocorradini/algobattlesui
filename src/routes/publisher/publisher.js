@@ -17,7 +17,7 @@ import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
 import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { SearchBar, SearchResults } from "../../components/search"
-import { EditPuzzle, PublisherDetailPuzzle, PublishPuzzle, SearchPublishedPuzzles, PublisherGetTests } from "../../lib/api/publisher"
+import { EditPuzzle, PublisherDetailPuzzle, PublishPuzzle, SearchPublishedPuzzles, PublisherGetTests, DeletePuzzle } from "../../lib/api/publisher"
 import PublishedPuzzleTable from "./publishedPuzzles"
 import PuzzleDialog, { CreatePuzzleDialog, EditPuzzleDialog } from "./puzzleDialog"
 
@@ -175,6 +175,20 @@ export default function PublisherPage() {
     const [searchResults, setSearchResults] = useState(null)
     const [query, setQuery] = useState("")
 
+    function deletePuzzle() {
+        DeletePuzzle(auth.token, currentPuzzle.id)
+        .then(response => {
+            toast({
+                title: "Deleted",
+                description: `Puzzle with ID ${currentPuzzle.id} was deleted.`
+            })
+            setOpenEditDialog(false)
+            setErrors({})
+            setForceUpdate(true)
+        })
+        .catch((err) => {})
+    }
+
     return (
         <div className="flex flex-col w-full min-h-screen bg-muted/40">
             <Header user={user}></Header>
@@ -211,7 +225,7 @@ export default function PublisherPage() {
 
             <Toaster></Toaster>
             <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} tests={tests} setTests={setTests} />
-            <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} tests={tests} setTests={setTests} />
+            <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} tests={tests} setTests={setTests} deletePuzzle={deletePuzzle} />
         </div>
     )
 }
