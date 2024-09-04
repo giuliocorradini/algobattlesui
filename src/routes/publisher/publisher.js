@@ -17,7 +17,7 @@ import { Toaster } from "../../components/ui/toaster"
 import NewProblemButton from "./newProblemButton"
 import PaginatedPuzzleTable from "../../components/paginatedPuzzleTable"
 import { SearchBar, SearchResults } from "../../components/search"
-import { EditPuzzle, PublisherDetailPuzzle, PublishPuzzle, SearchPublishedPuzzles } from "../../lib/api/publisher"
+import { EditPuzzle, PublisherDetailPuzzle, PublishPuzzle, SearchPublishedPuzzles, PublisherGetTests } from "../../lib/api/publisher"
 import PublishedPuzzleTable from "./publishedPuzzles"
 import PuzzleDialog, { CreatePuzzleDialog, EditPuzzleDialog } from "./puzzleDialog"
 
@@ -128,7 +128,16 @@ export default function PublisherPage() {
             setOpenEditDialog(true)
         })
         .catch(err => {})
+
+        PublisherGetTests(auth.token, pk)
+        .then(response => {
+            setTests(response.data)
+        })
+        .catch(err => {})
     }
+
+    const testsDefault = [{ input: '', output: '', is_private: false }]
+    const [tests, setTests] = useState(testsDefault)
 
     function handleEditSubmit(evt) {
         evt.preventDefault()
@@ -200,7 +209,7 @@ export default function PublisherPage() {
 
             <Toaster></Toaster>
             <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} />
-            <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} />
+            <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} tests={tests} setTests={setTests} />
         </div>
     )
 }

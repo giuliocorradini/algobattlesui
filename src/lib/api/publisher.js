@@ -27,6 +27,12 @@ export function PublisherDetailPuzzle(token, pk) {
     })
 }
 
+export function PublisherGetTests(token, pk) {
+    return client.get(`/publisher/tests/${pk}`, {
+        headers: { Authorization: `Token ${token}` }
+    })
+}
+
 export function EditPuzzle(token, pk, data) {
     return client.put(`/publisher/${pk}`, data, {
         headers: { Authorization: `Token ${token}` }
