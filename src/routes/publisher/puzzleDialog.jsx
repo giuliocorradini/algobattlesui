@@ -9,7 +9,6 @@ import { FormField } from '../../components/formfield';
 import { ErrorTextArea } from '../../components/errorTextArea';
 import { TrashIcon } from 'lucide-react';
 import { Checkbox } from '../../components/ui/checkbox';
-import { PlusCircleIcon } from 'lucide-react';
 
 
 function TestRow({ index, test, deleteTest, updateTest }) {
@@ -24,7 +23,7 @@ function TestRow({ index, test, deleteTest, updateTest }) {
     </div>
     <div className="space-y-2 flex items-end">
       <Label htmlFor={`test-${index}-private`}>Private</Label>
-      <Checkbox id={`test-${index}-private`} checked={test.is_private} onChange={(e) => updateTest(index, 'is_private', e.target.checked)} />
+      <Checkbox id={`test-${index}-private`} checked={test.is_private} onCheckedChange={(checked) => updateTest(index, 'is_private', checked)} />
     </div>
     <div className="space-y-2 flex items-end">
       <Button onClick={(evt) => {evt.preventDefault(); deleteTest(index)}}>
@@ -118,7 +117,7 @@ export function CreatePuzzleDialog(params) {
 
 export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton, values, tests, setTests}) {
   const addTest = () => {
-    setTests([...tests, { input: '', output: '', is_private: false }]);
+    setTests([...tests, { input: '', output: '', is_private: true }]);
   };
 
   const updateTest = (index, field, value) => {
@@ -203,14 +202,14 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
             index={index} test={test} deleteTest={deleteTest} updateTest={updateTest} addTest={addTest}
             ></TestRow>)
           }
-                    
-          <Button type="submit">Publish</Button>
+          
+          <div className="flex justify-end space-x-4">
+            <Button onClick={() => addTest()} variant="outline">
+              Add test row
+            </Button>
+            <Button type="submit">Publish</Button>
+          </div>
         </form>
-        <div className="flex justify-end">
-              <Button onClick={() => addTest()}>
-                <PlusCircleIcon className="h-6 w-6 stroke-2" />
-              </Button>
-            </div>
       </DialogContent>
     </Dialog>
   );
