@@ -18,6 +18,7 @@ import React from "react"
 import { useChallenge } from "../multiplayer/challengecontext"
 import { useMultiplayerWebsocket } from "../multiplayer/websocket"
 import EndDialog from "./enddialog"
+import { ScrollArea } from "@radix-ui/themes"
 
 
 function LanguageSelector({ supportedLanguages, language, setLanguage }) {
@@ -100,11 +101,13 @@ function AttemptsDrawer({attempts}) {
     <DrawerTrigger asChild>
       <Button variant="ghost">Attempts</Button>
     </DrawerTrigger>
-    <DrawerContent>
+    <DrawerContent className="fixed bottom-0 left-0 right-0 max-h-screen">
+      <ScrollArea>
       <DrawerHeader>
         <DrawerTitle>Attempts</DrawerTitle>
         <DrawerDescription>View your previous attempts.</DrawerDescription>
       </DrawerHeader>
+      <DrawerFooter>
       <div className="px-4 py-6 space-y-4">
 
         {attempts.map((att, i) => {
@@ -112,6 +115,9 @@ function AttemptsDrawer({attempts}) {
         })}
         
       </div>
+      </DrawerFooter>
+
+      </ScrollArea>
     </DrawerContent>
   </Drawer>
 }
