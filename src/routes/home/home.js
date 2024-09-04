@@ -105,13 +105,6 @@ function JumboSection({isLogged, user}) {
 }
 
 export default function HomePage() {
-  const highlight_categories = [
-    { name: "Greedy", link: "greedy" },
-    { name: "Divide and conquer", link: "dac" },
-    { name: "Tree", link: "tree" },
-    { name: "Computational geometry", link: "geom" }
-  ]
-
   const { isLogged, token, ...auth } = useContext(AuthenticationContext)
   const { user, setUser } = useContext(CurrentUserContext)
 
