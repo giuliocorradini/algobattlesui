@@ -2,7 +2,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Button } from "../../components/ui/button"
 import { Textarea } from "./textarea"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "../../components/ui/drawer"
-import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon, TrophyIcon, FrownIcon } from "lucide-react"
+import { OctagonX, CircleCheck, ChevronDownIcon, CodeIcon, CheckIcon, XIcon, TrophyIcon, FrownIcon, Hammer } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getPreviousAttempts, getPuzzle, getPuzzlePublicTests, puzzleAttemptRequest, pollAttempt, puzzleAttemptRequestMultiplayer, getPreviousAttemptsMultiplayer } from "../../lib/api/puzzle"
 import { useNavigate, useParams } from "react-router-dom"
@@ -76,17 +76,25 @@ function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
 }
 
 function AttemptsDrawer({attempts}) {
-  function Attempt({id, result: {isPassed, total, passedTests}}) {
+  const Attempt = ({ id, results, is_passed, build_error }) => {
+    const results_obj = build_error || results == "" ? {} : JSON.parse(results)
+    const total = Object.keys(results_obj).length
+    const passedTests = Object.entries(results_obj).map(([k, v]) => v).filter(v => v == "passed" ? 1 : 0).reduce((a, c) => a+c, 0)
+
     return <div className="flex items-start gap-4">
-          <div className={"flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground font-medium " + (isPassed ? "bg-green-600" : "bg-red-600")}>
-            { isPassed ? <CircleCheck /> : <OctagonX />}
+          <div className={"flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground font-medium " + (is_passed ? "bg-green-600" : "bg-red-600")}>
+            { is_passed ? <CircleCheck /> : (build_error ? <Hammer /> : <OctagonX />)}
           </div>
           <div>
             <div className="font-medium">Attempt {id}</div>
-            <div className="text-muted-foreground text-sm">Passed {passedTests} out of {total} tests</div>
+            <div className="text-muted-foreground text-sm">{
+              build_error ? "Build error" : `Passed ${passedTests} out of ${total} tests`
+  }</div>
           </div>
         </div>
   }
+
+
 
   return <Drawer>
     <DrawerTrigger asChild>
@@ -100,7 +108,7 @@ function AttemptsDrawer({attempts}) {
       <div className="px-4 py-6 space-y-4">
 
         {attempts.map((att, i) => {
-          return <Attempt key={i} id={i} result={{...att}} isPassed={att.passed}></Attempt>
+          return <Attempt key={i} id={i} {...att}></Attempt>
         })}
         
       </div>
