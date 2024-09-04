@@ -98,7 +98,8 @@ export default function PublisherPage() {
             time_constraint: parseInt(formData.timeConstraint.value, 10),
             memory_constraint: parseInt(formData.memoryConstraint.value, 10),
             visibility: formData.visibility.value,
-            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== '')
+            categories: formData.categories.value.split(',').map(cat => cat.trim()).filter(cat => cat !== ''),
+            tests: tests
         };
 
         
@@ -209,7 +210,7 @@ export default function PublisherPage() {
             </main>
 
             <Toaster></Toaster>
-            <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} />
+            <CreatePuzzleDialog errs={errs} handleSubmit={handleCreationSubmit} open={openCreationDialog} setOpen={setOpenCreationDialog} tests={tests} setTests={setTests} />
             <EditPuzzleDialog errs={errs} handleSubmit={handleEditSubmit} open={openEditDialog} setOpen={setOpenEditDialog} values={currentPuzzle} tests={tests} setTests={setTests} />
         </div>
     )

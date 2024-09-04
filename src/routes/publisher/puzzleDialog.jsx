@@ -43,13 +43,30 @@ function TestRow({ index, test, deleteTest, updateTest }) {
  * Dialog to create/edit a puzzle. Handles form data internally and passes to handleSubmit.
  * Errors are set externally in the response, and are get from the errs facility.
  */
-export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openButton}) {
+export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openButton, tests, setTests}) {
+  const addTest = () => {
+    setTests([...tests, { input: '', output: '', is_private: true }]);
+  };
+
+  const updateTest = (index, field, value) => {
+    const updatedTests = [...tests];
+    updatedTests[index][field] = value;
+    setTests(updatedTests);
+  };
+
+  const deleteTest = (index) => {
+    const updatedTests = [...tests];
+    updatedTests.splice(index, 1);
+    setTests(updatedTests);
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {openButton}
       </DialogTrigger>
-      <DialogContent className="md:max-w-[1000px]">
+      <DialogContent className="md:max-w-[1000px] h-full max-h-[96%]">
+        <ScrollArea className="overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Puzzle</DialogTitle>
         </DialogHeader>
@@ -107,8 +124,20 @@ export default function PuzzleDialog({open, setOpen, errs, handleSubmit, openBut
             <FormField id="categories" name="categories" placeholder="e.g. Arrays, Strings, Dynamic Programming" {...errs("categories")} />
           </div>
                     
-          <Button type="submit">Publish</Button>
+          {
+            tests.map((test, index) => <TestRow
+            index={index} test={test} deleteTest={deleteTest} updateTest={updateTest} addTest={addTest}
+            ></TestRow>)
+          }
+          
+          <div className="flex justify-end space-x-4">
+            <Button onClick={(evt) => {evt.preventDefault(); addTest()}} variant="outline">
+              Add test row
+            </Button>
+            <Button type="submit">Publish</Button>
+          </div>
         </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
