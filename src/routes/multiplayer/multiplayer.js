@@ -15,11 +15,14 @@ import { FetchUserPublicInfo } from "../../lib/api/user";
 import LoadingCard from "./loadingcard";
 import { SearchBar, SearchResults } from "../../components/search";
 import FeaturedProblems from "../../components/featuredproblems";
-
+import { Loader } from "lucide-react";
 
 function UserList({members, showUserDetail, user}) {
     return <div className="container mx-auto px-4 py-8">
-        <h2 className="text-xl font-bold mb-4">Active users</h2>
+        <div className="flex flex-row space-x-4">
+            <h2 className="text-xl font-bold mb-4">Active users</h2>
+            <Loader className="animate-spin" />
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
             {
