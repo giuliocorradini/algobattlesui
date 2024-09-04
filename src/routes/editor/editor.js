@@ -38,23 +38,23 @@ function LanguageSelector({ supportedLanguages, language, setLanguage }) {
   </DropdownMenu>
 }
 
-function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
-  function Example() {
+function PuzzleText({ title, description, examples, constr: { mem, cpu } }) {
+  function Example({example}) {
     if (example === undefined)
       return <p>
         No additional examples available.
       </p>
     else
-      return <>
+      return <div className="mb-2">
         <p>
           For:
-          <br/><code>{example.input}</code>
+          <br/><code className="text-slate-900">{example.input}</code>
         </p>
         <p>
           the expected output is:
-          <br/><code>{example.output}</code>
+          <br/><code className="text-slate-900">{example.output}</code>
         </p>
-      </>
+      </div>
   }
 
   return <div className="bg-muted p-6 overflow-auto">
@@ -64,15 +64,19 @@ function PuzzleText({ title, description, example, constr: { mem, cpu } }) {
         {description}
       </p>
 
-      <h3 className="mt-4">Example</h3>
-      <Example />
+      {
+        examples && examples.length > 0 ? [
+          <h3 className="mt-4">Example{examples.length>1?"s":""}</h3>,
+          examples.map((e, i) => <Example key={i} example={e} />)] :
+          <h3 className="mt-4">No examples available</h3>
+      }
 
       <h3 className="mt-4">Constraints</h3>
       <p>
-        Memory <code>{mem}</code>
+        Memory <code>{mem}</code> bytes
       </p>
       <p>
-        CPU time <code>{cpu}</code>
+        CPU time <code>{cpu}</code> µs
       </p>
     </div>
   </div>
@@ -157,8 +161,6 @@ export default function EditorPage({multiplayer}) {
   const [attempts, setAttempts] = useState([])
 
   const { pk } = useParams();
-
-  const exampleTest = publicTests.at(0)
 
   const {isLogged, token, ...auth} = useContext(AuthenticationContext)
   const {user, setUser} = useContext(CurrentUserContext)
@@ -344,7 +346,7 @@ export default function EditorPage({multiplayer}) {
       </header>
       <div className="flex-1 grid grid-cols-[1fr_2fr] overflow-auto">
 
-        <PuzzleText title={problemDescription.title} description={problemDescription.description} example={exampleTest} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
+        <PuzzleText title={problemDescription.title} description={problemDescription.description} examples={publicTests} constr={{ mem: problemDescription.memory_constraint, cpu: problemDescription.time_constraint }}></PuzzleText>
 
         <div className="relative bg-background p-2">
           <Textarea
