@@ -74,7 +74,7 @@ function LoginForm() {
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="username">Username</Label>
             <Input name="username" type="text" placeholder="Your username..." required />
           </div>
           <div className="grid gap-2">

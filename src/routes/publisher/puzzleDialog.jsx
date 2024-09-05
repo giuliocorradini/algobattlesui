@@ -176,7 +176,7 @@ export function EditPuzzleDialog({open, setOpen, errs, handleSubmit, openButton,
       <DialogContent className="md:max-w-[1000px] h-full max-h-[96%]">
         <ScrollArea className="overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Puzzle</DialogTitle>
+          <DialogTitle>Edit puzzle</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -87,7 +87,7 @@ export default function PaginatedPuzzleTable({ fetchPuzzles, setPuzzles, puzzles
                         Previous
                     </Button>
                 </div>
-                <span>Page {currentPage} of {totalPages}</span>
+                <span>Page {currentPage} of {totalPages > 0 ? totalPages : 1}</span>
                 <div className="flex space-x-2">
                     <Button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
