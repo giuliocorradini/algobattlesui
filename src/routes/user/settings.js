@@ -59,7 +59,7 @@ export default function SettingsPage() {
 
     useEffect(() => {
         if (!auth.isLogged)
-            navigate("/login")  //TODO: better, check token and decide to login
+            navigate("/login")
     }, [])
 
     const [errors, setErrors] = useState({})

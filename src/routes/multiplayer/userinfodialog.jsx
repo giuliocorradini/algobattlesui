@@ -7,7 +7,6 @@ import { SiGithub, SiLinkedin } from "@icons-pack/react-simple-icons"
  * Shows a skeleton instead of user information, waiting for user info from the API
  */
 function SkeletonUserInfo() {
-  //TODO
 }
 
 /**

@@ -34,7 +34,7 @@ function UserList({members, showUserDetail, user}) {
 }
 
 /**
- * Horizontally scrollable (TODO) list of received requests for challenge. Shows the other user
+ * Horizontally scrollable list of received requests for challenge. Shows the other user
  */
 function ChallengeRequestsList({requests, acceptChallenge}) {
     return requests.length > 0 &&
