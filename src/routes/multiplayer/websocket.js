@@ -7,7 +7,7 @@ export const MultiplayerWebsocketProvider = ({ children }) => {
   const [shouldConnect, setShouldConnect] = useState(false)
 
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
-    `ws://localhost:8000/ws/multiplayer`,
+    `ws://${window.location.host}/ws/multiplayer`,
     {
       shouldReconnect: (closeEvent) => false,
       reconnectAttempts: 10,
