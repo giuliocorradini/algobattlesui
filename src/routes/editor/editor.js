@@ -83,14 +83,14 @@ function PuzzleText({ title, description, examples, constr: { mem, cpu } }) {
 }
 
 function AttemptsDrawer({attempts}) {
-  const Attempt = ({ id, results, is_passed, build_error }) => {
+  const Attempt = ({ id, results, passed, build_error }) => {
     const results_obj = build_error || results == "" ? {} : JSON.parse(results)
     const total = Object.keys(results_obj).length
-    const passedTests = Object.entries(results_obj).map(([k, v]) => v).filter(v => v == "passed" ? 1 : 0).reduce((a, c) => a+c, 0)
+    const passedTests = Object.entries(results_obj).map(([k, v]) => v).filter(v => v == "passed").map(s => 1).reduce((a, c) => a+c, 0)
 
     return <div className="flex items-start gap-4">
-          <div className={"flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground font-medium " + (is_passed ? "bg-green-600" : "bg-red-600")}>
-            { is_passed ? <CircleCheck /> : (build_error ? <Hammer /> : <OctagonX />)}
+          <div className={"flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground font-medium " + (passed ? "bg-green-600" : "bg-red-600")}>
+            { passed ? <CircleCheck /> : (build_error ? <Hammer /> : <OctagonX />)}
           </div>
           <div>
             <div className="font-medium">Attempt {id}</div>
@@ -278,6 +278,8 @@ export default function EditorPage({multiplayer}) {
             title: "Tests passed",
             description: "Your solution has passed all the tests."
           })
+
+          setAttempts(attempts.concat(response.data))
         } else if (response.data.passed == false && response.data.results != "") {
           toast({
             title: "Build error",
@@ -287,11 +289,11 @@ export default function EditorPage({multiplayer}) {
 
           setLastAttempt(response.data)
           updateResponseStatus({ waitingResponse: false })
+
+          setAttempts(attempts.concat(response.data))
         } else if (response.data.results == "") {
           updateResponseStatus({ waitingResponse: true })
         }
-
-        setAttempts(attempts.concat(response.data))
       })
       .catch(err => {
         console.log()
